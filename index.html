@@ -188,7 +188,8 @@ html.js:not(.app) .gate { animation: gate-failsafe .4s 7s forwards; }
 .g-tog { position: absolute; left: 0; right: 0; bottom: calc(var(--tog-b) + env(safe-area-inset-bottom, 0px)); z-index: 3; display: flex; justify-content: center; padding-inline: var(--pad); }
 .tog { position: relative; flex: none; display: block; width: calc(var(--th) * 3.3); max-width: 100%; height: var(--th); border-radius: 999px; border: 1.5px solid rgba(237,235,230,.55); background: rgba(10,10,10,.38); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); overflow: hidden; isolation: isolate; transition: border-color .6s var(--ease); }
 .tog:hover { border-color: rgba(237,235,230,.9); }
-.tog-click { position: absolute; left: calc(var(--th) - 4px); right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: calc(var(--th) * .38); font-weight: 600; letter-spacing: -.02em; color: var(--fg); white-space: nowrap; }
+/* 「Click」はトグルいっぱいに（つまみの右から、丸い端の手前まで） */
+.tog-click { position: absolute; left: calc(var(--th) - 2px); right: calc(var(--th) * .16); top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: calc(var(--th) * .8); font-weight: 600; line-height: 1; letter-spacing: -.045em; color: var(--fg); white-space: nowrap; padding-bottom: calc(var(--th) * .02); }
 .tog-fill { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; padding: 0 calc(var(--th) + 6px) 0 calc(var(--th) * .45); background: var(--amber); color: var(--ink); border-radius: inherit; clip-path: inset(0 100% 0 0 round 999px); }
 .tog-ink { font-size: calc(var(--th) * .5); font-weight: 500; letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
 .tog-text em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; font-size: 1.12em; }
@@ -211,6 +212,18 @@ html.js:not(.app) .gate { animation: gate-failsafe .4s 7s forwards; }
 .op-v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
 .op-flood { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; background: var(--amber); color: var(--ink); visibility: hidden; pointer-events: none; }
 .op-title { font-size: clamp(2.4rem, 7.6vw, 8.2rem); font-weight: 500; line-height: 1.1; letter-spacing: -.055em; white-space: nowrap; transform-origin: 0 0; }
+/* 動画の最後（ページ側で動かす）：トグルだけ→カチッ→オレンジ一色→トグルが左へずれて aigentcraft が左から→本編の左上のロゴへ
+   大きさの比は本編の左上のロゴ（.logo：記号 30×18、すき間 10px、文字 19px）と同じにしてあり、そのまま縮めると重なる */
+.op-outro { position: absolute; inset: 0; z-index: 8; display: grid; place-items: center; background: var(--bg); color: var(--fg); visibility: hidden; pointer-events: none;
+  --oh: clamp(40px, min(calc((100vw - 48px) / 7.4), 10.5vh), 104px); }
+.oo-flood { position: absolute; inset: 0; background: var(--amber); visibility: hidden; }
+.oo-lock { position: relative; display: inline-flex; align-items: center; font-family: var(--f-sans); font-weight: 500; font-size: calc(var(--oh) * 1.0556); letter-spacing: -.03em; line-height: 1.85; white-space: nowrap; pointer-events: none; }
+.oo-mark { width: calc(var(--oh) * 1.6667); height: var(--oh); flex: none; overflow: visible; }
+.oo-track { fill: none; stroke: currentColor; stroke-width: 2; }
+.oo-on { fill: var(--amber); }
+.oo-knob { fill: currentColor; }
+.oo-wrap { display: block; overflow: hidden; width: 0; }
+.oo-word { display: block; }
 /* 動画の読み込みを待つあいだだけ出る細い線（琥珀色の画面の下） */
 .op-load { position: absolute; left: 0; right: 0; bottom: clamp(72px, 14vh, 140px); width: min(320px, 56vw); height: 4px; margin: 0 auto; border-radius: 2px; background: rgba(27, 26, 24, .2); overflow: hidden; opacity: 0; visibility: hidden; }
 .op-load i { position: absolute; inset: 0; background: var(--ink); transform: scaleX(0); transform-origin: 0 50%; }
@@ -237,7 +250,7 @@ html.js:not(.app) .gate { animation: gate-failsafe .4s 7s forwards; }
   .g-time { font-size: 14px; padding: 3px 8px; }
   .gc .gl .rv-t { font-size: clamp(1.35rem, 6.2vw, 1.7rem); line-height: 1.36; letter-spacing: -.02em; }
   .g-tog { padding-inline: var(--pad); }
-  .tog-click { font-size: 28px; }
+  .tog-click { font-size: calc(var(--th) * .8); }
   .tog-fill { padding: 0 calc(var(--th) + 4px) 0 22px; }
   .tog-ink { font-size: clamp(1.25rem, 6vw, 1.55rem); }
   .tog-knob { left: 8px; top: 8px; width: calc(var(--th) - 18px); height: calc(var(--th) - 18px); }
@@ -629,6 +642,7 @@ html:not(.app) [data-words] .w { opacity: 1; }
   <div class="g-op" hidden aria-hidden="true">
     <div class="op-video"></div>
     <div class="op-flood"><p class="op-title">Work With <em>aigentcraft</em></p><div class="op-load"><i></i></div></div>
+    <div class="op-outro"><div class="oo-flood"></div><div class="oo-lock"><svg class="oo-mark" viewBox="0 0 34 20" aria-hidden="true"><rect class="oo-on" x="1" y="1" width="32" height="18" rx="9"/><rect class="oo-track" x="1" y="1" width="32" height="18" rx="9"/><circle class="oo-knob" cx="10" cy="10" r="5.5"/></svg><span class="oo-wrap"><span class="oo-word">aigentcraft</span></span></div></div>
   </div>
 
   <div class="g-top wrap">
@@ -1025,7 +1039,7 @@ html:not(.app) [data-words] .w { opacity: 1; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.21/dist/lenis.min.js"></script>
-<script>window.__DATA__={"first":"2025-10-13","last":"2026-10-08","n":361,"total":1512,"activeDays":151,"repos":18,"cats":[["メディア運営",632,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,12,10,2,7,8,9,0,5,11,7,14,38,12,11,21,15,6,6,6,3,10,6,1,9,5,18,49,22,25,6,1,25,3,7,3,10,6,9,11,17,11,9,7,12,0,0,0,9,8,4,11,3,21,3,16,6,12,3,7,0,4,0,7,10,3,1,2,14]],["自分専用の AI 基盤",443,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,8,12,3,2,12,7,84,22,7,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,4,0,4,3,12,3,7,5,3,2,3,3,2,1,4,1,2,1,15,20,8,14,4,1,10,1,3,2,5,5,7,7,5,4,3,6,4,0,8,9,2,10,3,9,0,23,1,3,4,2,0,2,0,4,0,5,3,3,0,0,3]],["業務の自動化",248,[7,31,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,5,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0,0,1,0,1,1,0,0,0,1,0,0,1,1,0,0,1,1,1,0,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,6,22,22,5,12,10,12,0,28,1,0,1,1,0,1,2,5,3,8,2,3,0,0,0]],["kintone 業務アプリ",45,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1,0,0,2,2,0,0,2,0,0,4,4,0,1,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1,0,0,0,0,0,0,4,1,0,0,0,0,0,0,0,2,0,3,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0]],["建設・セミナー",14,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,0]],["そのほか",130,[0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,2,19,9,6,2,1,21,5,12,8,19,4,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]],"peak":["2026-03-01",84],"augSep":1014,"maxCat":84};window.__CLIPS={"A1":{"jpg":1,"mp4":1},"A1_fin":{"jpg":1},"A2":{"jpg":1,"mp4":1},"A2_fin":{"jpg":1},"A3":{"jpg":1,"mp4":1},"A3_fin":{"jpg":1},"A4":{"jpg":1,"mp4":1},"A4_fin":{"jpg":1},"A5":{"jpg":1,"mp4":1},"A5_fin":{"jpg":1},"B1":{"jpg":1,"mp4":1},"B2":{"jpg":1,"mp4":1},"B3":{"jpg":1,"mp4":1},"B4":{"jpg":1,"mp4":1},"B5":{"jpg":1,"mp4":1}};window.__MEDIA="video";window.__OPENER={"dur":9.6,"l":{"mp4":"assets/opener/opener_l.mp4","webm":"assets/opener/opener_l.webm","ar":1.7778,"cover":[0.895,1.16]},"p":{"mp4":"assets/opener/opener_p.mp4","webm":"assets/opener/opener_p.webm","ar":0.5625,"cover":[0.82,1.21]}};</script>
+<script>window.__DATA__={"first":"2025-10-13","last":"2026-10-08","n":361,"total":1512,"activeDays":151,"repos":18,"cats":[["メディア運営",632,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,12,10,2,7,8,9,0,5,11,7,14,38,12,11,21,15,6,6,6,3,10,6,1,9,5,18,49,22,25,6,1,25,3,7,3,10,6,9,11,17,11,9,7,12,0,0,0,9,8,4,11,3,21,3,16,6,12,3,7,0,4,0,7,10,3,1,2,14]],["自分専用の AI 基盤",443,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,8,12,3,2,12,7,84,22,7,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,4,0,4,3,12,3,7,5,3,2,3,3,2,1,4,1,2,1,15,20,8,14,4,1,10,1,3,2,5,5,7,7,5,4,3,6,4,0,8,9,2,10,3,9,0,23,1,3,4,2,0,2,0,4,0,5,3,3,0,0,3]],["業務の自動化",248,[7,31,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,5,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0,0,1,0,1,1,0,0,0,1,0,0,1,1,0,0,1,1,1,0,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,6,22,22,5,12,10,12,0,28,1,0,1,1,0,1,2,5,3,8,2,3,0,0,0]],["kintone 業務アプリ",45,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1,0,0,2,2,0,0,2,0,0,4,4,0,1,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1,0,0,0,0,0,0,4,1,0,0,0,0,0,0,0,2,0,3,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0]],["建設・セミナー",14,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,0]],["そのほか",130,[0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,2,19,9,6,2,1,21,5,12,8,19,4,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]],"peak":["2026-03-01",84],"augSep":1014,"maxCat":84};window.__CLIPS={"A1":{"jpg":1,"mp4":1},"A1_fin":{"jpg":1},"A2":{"jpg":1,"mp4":1},"A2_fin":{"jpg":1},"A3":{"jpg":1,"mp4":1},"A3_fin":{"jpg":1},"A4":{"jpg":1,"mp4":1},"A4_fin":{"jpg":1},"A5":{"jpg":1,"mp4":1},"A5_fin":{"jpg":1},"B1":{"jpg":1,"mp4":1},"B2":{"jpg":1,"mp4":1},"B3":{"jpg":1,"mp4":1},"B4":{"jpg":1,"mp4":1},"B5":{"jpg":1,"mp4":1}};window.__MEDIA="video";window.__OPENER={"dur":10.8,"l":{"mp4":"assets/opener/opener_l.mp4","webm":"assets/opener/opener_l.webm","ar":1.7778,"cover":[0.895,1.16]},"p":{"mp4":"assets/opener/opener_p.mp4","webm":"assets/opener/opener_p.webm","ar":0.5625,"cover":[0.82,1.21]}};</script>
 <script>
 /* v3 — 入口（動画とトグル）と、Cortex の作りの本編 */
 (function () {
@@ -1544,7 +1558,12 @@ html:not(.app) [data-words] .w { opacity: 1; }
     }
     if (bar) gsap.to(bar, { autoAlpha: 0, duration: .25, overwrite: true });
     var started = false, dur = (OPV && OPV.dur) || 10;
-    var leave = function (why) { dbg('leave: ' + why + ' t' + v.currentTime.toFixed(2)); if (G.stage === 'opener' && G.open) exitGate('auto'); };
+    var leave = function (why) {
+      dbg('leave: ' + why + ' t' + v.currentTime.toFixed(2));
+      if (G.stage !== 'opener' || !G.open) return;
+      /* 最後まで流れたら、ページ側の「トグル→カチッ→ロゴ」へ。途中で止まったときなどは、そのまま本編へ */
+      if (why === 'end' || why === 'ended') startOutro(); else exitGate('auto');
+    };
     /* 流れ始めたら、0.5 秒ごとに進んでいるかを見る。止まったら 1.5 秒後に一度だけ少し先へ送って動かし直し、
        それでも 5 秒止まったままなら本編へ（途中で本編へ飛ばない） */
     var lastT = -1, lastAt = 0, kicked = false, tick = 0, fT = 0, fN = -1, fixes = 0;
@@ -1590,8 +1609,8 @@ html:not(.app) [data-words] .w { opacity: 1; }
       clearTimer();
       lastAt = performance.now(); watch();
     };
-    /* 最後は黒く暗くなるので、暗くなり始めたら本編へ移る */
-    var onTime = function () { if (v.currentTime >= dur - .45) { v.removeEventListener('timeupdate', onTime); leave('end'); } };
+    /* 動画の最後は黒い画面（Work With が消えたあと）。そこまで来たら、ページ側の最後へ */
+    var onTime = function () { if (v.currentTime >= dur - .12) { v.removeEventListener('timeupdate', onTime); leave('end'); } };
     v.addEventListener('timeupdate', onTime);
     v.addEventListener('playing', go, { once: true });
     v.addEventListener('ended', function () { leave('ended'); }, { once: true });
@@ -1609,6 +1628,86 @@ html:not(.app) [data-words] .w { opacity: 1; }
     /* 読み込み済みなので、ふつうはすぐ始まる。6 秒たっても始まらなければ本編へ */
     clearTimer();
     G.timer = gsap.delayedCall(6, function () { if (!started) leave('no start 6s'); });
+  }
+  /* ── 動画の最後：真ん中にトグルだけ→カチッ→オレンジ一色→トグルが左へずれて aigentcraft が左から現れる ── */
+  var gOut, ooLock, ooMark, ooWrap, ooWord, ooFlood, ooHome;
+  function startOutro() {
+    if (!G.open || G.stage !== 'opener' || !gOut) { exitGate('auto'); return; }
+    G.stage = 'outro'; gate.dataset.stage = 'outro'; G.ooFormed = false;
+    clearTimer();
+    var knob = $('.oo-knob', ooMark), on = $('.oo-on', ooMark);
+    gsap.set(gOut, { visibility: 'visible', color: '#edebe6' });
+    gsap.set(ooFlood, { visibility: 'hidden' });
+    gsap.set(ooWrap, { width: 0, marginLeft: 0 });
+    gsap.set(ooWord, { xPercent: -100 });
+    gsap.set(knob, { attr: { cx: 10 } });
+    gsap.set(on, { scaleX: 0, opacity: 1, transformOrigin: '0% 50%' });
+    gsap.set(ooMark, { scale: 1, autoAlpha: 0, transformOrigin: '50% 50%' });
+    /* 大きさと位置は最初に測っておき、動きはすべて 1 本の時間の流れに並べる（途中で測ると、重いときに順番がずれる） */
+    var r0 = ooMark.getBoundingClientRect();
+    var big = Math.min(2.2, Math.max(1.5, 150 / (r0.height || 90)));
+    var cx = r0.left + r0.width / 2, cy = r0.top + r0.height / 2, hw = r0.width * big / 2, hh = r0.height * big / 2;
+    var W = innerWidth, Hh = innerHeight;
+    var from = 'inset(' + Math.round(cy - hh) + 'px ' + Math.round(W - cx - hw) + 'px ' + Math.round(Hh - cy - hh) + 'px ' + Math.round(cx - hw) + 'px round ' + Math.round(hh) + 'px)';
+    var ww = Math.ceil(ooWord.scrollWidth) + 2, gap = r0.height * .5556;
+    gsap.set(ooMark, { scale: big * .82 });
+    /* 左上の小さなロゴは隠す（真ん中のロゴと二つ並ばないように） */
+    gsap.to($('.g-top .logo', gate), { autoAlpha: 0, duration: .3 });
+    var tl = gsap.timeline();
+    G.opTl = tl;
+    tl.to(ooMark, { scale: big, autoAlpha: 1, duration: .38, ease: 'expo.out' }, .05)
+      /* カチッ：少し沈んで戻り、つまみが右へ。中が琥珀色になる */
+      .to(ooMark, { scale: big * .92, duration: .08, ease: 'power2.out' }, .5)
+      .to(ooMark, { scale: big, duration: .34, ease: 'back.out(3)' }, .58)
+      .to(knob, { attr: { cx: 24 }, duration: .3, ease: 'expo.inOut' }, .52)
+      .to(on, { scaleX: 1, duration: .3, ease: 'expo.inOut' }, .52)
+      /* 琥珀色がトグルの形から画面いっぱいに広がる。トグルは濃い色になり、ロゴの記号と同じ形に
+         （始まりと終わりの形を両方とも書く。始まりだけ set すると、ブラウザが値を省略した形に直してしまい、広がり方がずれる） */
+      .set(ooFlood, { visibility: 'visible' }, .92)
+      .call(function () { gate.classList.add('on-amber'); }, null, .92)
+      .fromTo(ooFlood, { clipPath: from }, { clipPath: 'inset(0px 0px 0px 0px round 0px)', duration: .55, ease: 'expo.inOut', immediateRender: false }, .92)
+      .to(gOut, { color: '#1b1a18', duration: .14, ease: 'power1.inOut' }, .95)
+      .to(on, { opacity: 0, duration: .14 }, .95)
+      /* トグルが縮みながら左へずれ、少し遅れて、その右に aigentcraft が左から現れる */
+      .to(ooMark, { scale: 1, duration: .5, ease: 'power3.out' }, 1.5)
+      .to(ooWrap, { width: ww, duration: .62, ease: 'expo.out' }, 1.66)
+      .to(ooWrap, { marginLeft: gap, duration: .3, ease: 'power3.out' }, 1.6)
+      .to(ooWord, { xPercent: 0, duration: .62, ease: 'expo.out' }, 1.66)
+      .call(function () { G.ooFormed = true; }, null, 2.28)
+      .call(function () { exitGate('outro'); }, null, 2.6);
+  }
+  /* ロゴを、本編の左上のロゴの位置へ縮めながら動かす（着いたら本物のロゴに入れ替える） */
+  function flyLogo() {
+    var logo = $('.hd .logo'), lm = logo && $('.logo-mark', logo);
+    if (!lm || !G.ooFormed) return false;
+    /* 着地点を測る（本編を初めて見るときは、ロゴは少し上にずれて隠れているので、一度もとに戻して測る） */
+    gsap.set(logo, { yPercent: 0 });
+    var t = lm.getBoundingClientRect();
+    if (heroDone) gsap.set(logo, { autoAlpha: 0 }); else gsap.set(logo, { yPercent: -60 });
+    var m = ooMark.getBoundingClientRect(), b = ooLock.getBoundingClientRect(), cs = getComputedStyle(ooLock);
+    if (!t.height || !m.height) return false;
+    /* 幕の外（ページのいちばん上）へ移して、同じ場所・同じ大きさに置く */
+    gsap.set(ooMark, { width: m.width, height: m.height });
+    gsap.set(ooLock, { position: 'fixed', left: b.left, top: b.top, margin: 0, zIndex: 120, fontSize: cs.fontSize, lineHeight: cs.lineHeight, color: '#1b1a18',
+      transformOrigin: (m.left - b.left) + 'px ' + (m.top - b.top) + 'px', x: 0, y: 0, scale: 1 });
+    D.body.appendChild(ooLock);
+    G.logoFly = true;
+    gsap.to(ooLock, { x: t.left - m.left, y: t.top - m.top, scale: t.height / m.height, color: '#edebe6', duration: .95, ease: 'expo.inOut', onComplete: function () {
+      gsap.set(logo, { yPercent: 0, autoAlpha: 1 });
+      var nm = $('.logo-name', logo); if (nm) gsap.from(nm, { autoAlpha: 0, x: -10, duration: .5, ease: 'expo.out' });
+      gsap.set(ooLock, { autoAlpha: 0 });
+    } });
+    return true;
+  }
+  function resetOutro() {
+    if (!gOut) return;
+    G.ooFormed = false;
+    if (ooLock.parentNode !== ooHome) ooHome.appendChild(ooLock);
+    gsap.killTweensOf([ooLock, ooMark, ooWrap, ooWord, ooFlood]);
+    gsap.set([ooLock, ooMark, ooWrap, ooWord], { clearProps: 'all' });
+    gsap.set(ooFlood, { visibility: 'hidden', clearProps: 'clipPath' });
+    gsap.set(gOut, { visibility: 'hidden', clearProps: 'color' });
+    gsap.set($('.g-top .logo', gate), { clearProps: 'opacity,visibility' });
   }
   function stopOpener() {
     if (G.opv) { try { G.opv.pause(); } catch (e) {} }
@@ -1633,6 +1732,14 @@ html:not(.app) [data-words] .w { opacity: 1; }
     if (RM) { gsap.to(gate, { autoAlpha: 0, duration: .3, onComplete: function () { gsap.set(gate, { autoAlpha: 1 }); fin(); heroIntro(); } }); return; }
     var rise = $$('.g-top .g-rise', gate), tl = gsap.timeline({ onComplete: fin });
     gate.classList.remove('on-amber');
+    if (stage === 'outro') {
+      /* ロゴが本編の左上のロゴの位置へ縮みながら動き、オレンジの幕が上へ抜ける。ロゴがまだできていなければ、幕を抜くだけ */
+      flyLogo();
+      tl.to(rise, { yPercent: -60, autoAlpha: 0, duration: .45, stagger: .025, ease: 'power3.in' }, 0)
+        .to(gate, { yPercent: -100, duration: 1.1, ease: 'expo.inOut' }, 0)
+        .call(heroIntro, null, .45);
+      return;
+    }
     if (stage === 'opener') {
       /* 動画ごと幕を上へ抜く（動画は少し遅れて動き、奥行きが出る） */
       gsap.set(gFlood, { visibility: 'hidden' });
@@ -1656,6 +1763,7 @@ html:not(.app) [data-words] .w { opacity: 1; }
     var bar = $('.op-load', gFlood); if (bar) { gsap.set(bar, { autoAlpha: 0 }); gsap.set($('i', bar), { scaleX: 0 }); }
     stopOpener();
     if (G.opv && G.opv.currentTime > .05) { try { G.opv.currentTime = 0; } catch (e) {} }
+    resetOutro();
     gOp.hidden = true;
   }
   function openGate(first) {
@@ -1688,6 +1796,8 @@ html:not(.app) [data-words] .w { opacity: 1; }
     gCap = $('.g-cap', gate); gSteps = $('.g-steps', gate);
     tog = $('.tog', gate); togFill = $('.tog-fill', gate); togKnob = $('.tog-knob', gate); togClick = $('.tog-click', gate);
     gOpVideo = $('.op-video', gate); gFlood = $('.op-flood', gate);
+    gOut = $('.op-outro', gate);
+    if (gOut) { ooFlood = $('.oo-flood', gOut); ooLock = $('.oo-lock', gOut); ooHome = gOut; ooMark = $('.oo-mark', gOut); ooWrap = $('.oo-wrap', gOut); ooWord = $('.oo-word', gOut); }
     if (!SCENES.length) return false;
     SCENES.forEach(function (s) {
       var b = buildClip(s.b);
@@ -1738,7 +1848,7 @@ html:not(.app) [data-words] .w { opacity: 1; }
     var tl = gsap.timeline();
     tl.fromTo('.hero-bg img', { scale: 1.2 }, { scale: 1.04, duration: 2.8, ease: 'expo.out' }, 0)
       .to('.hero-h1 .ln > span', { yPercent: 0, duration: 1.5, ease: 'expo.out', stagger: .11 }, .2)
-      .to('.hd-i', { yPercent: 0, autoAlpha: 1, duration: 1.1, ease: 'expo.out', stagger: .06 }, .35)
+      .to(G.logoFly ? '.hd-i:not(.logo)' : '.hd-i', { yPercent: 0, autoAlpha: 1, duration: 1.1, ease: 'expo.out', stagger: .06 }, .35)
       .to('.hero-r', { y: 0, autoAlpha: 1, duration: 1.3, ease: 'expo.out', stagger: .08 }, .6);
   }
   function prepHero() {
