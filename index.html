@@ -211,6 +211,9 @@ html.js:not(.app) .gate { animation: gate-failsafe .4s 7s forwards; }
 .op-v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
 .op-flood { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; background: var(--amber); color: var(--ink); visibility: hidden; pointer-events: none; }
 .op-title { font-size: clamp(2.4rem, 7.6vw, 8.2rem); font-weight: 500; line-height: 1.1; letter-spacing: -.055em; white-space: nowrap; transform-origin: 0 0; }
+/* 動画の読み込みを待つあいだだけ出る細い線（琥珀色の画面の下） */
+.op-load { position: absolute; left: 0; right: 0; bottom: clamp(72px, 14vh, 140px); width: min(320px, 56vw); height: 4px; margin: 0 auto; border-radius: 2px; background: rgba(27, 26, 24, .2); overflow: hidden; opacity: 0; visibility: hidden; }
+.op-load i { position: absolute; inset: 0; background: var(--ink); transform: scaleX(0); transform-origin: 0 50%; }
 .op-title em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; font-size: 1.1em; }
 
 /* タブレット・スマホ（縦長）：人は真ん中に写るので、説明は下の余白（顔より下、トグルより上）の真ん中 */
@@ -625,7 +628,7 @@ html:not(.app) [data-words] .w { opacity: 1; }
   <!-- トグルを押したあと：自動にしたあとの流れ（HyperFrames で作った動画） -->
   <div class="g-op" hidden aria-hidden="true">
     <div class="op-video"></div>
-    <div class="op-flood"><p class="op-title">Work With <em>aigentcraft</em></p></div>
+    <div class="op-flood"><p class="op-title">Work With <em>aigentcraft</em></p><div class="op-load"><i></i></div></div>
   </div>
 
   <div class="g-top wrap">
@@ -1376,7 +1379,9 @@ html:not(.app) [data-words] .w { opacity: 1; }
   function focusToggle() { if (!lastKey) return; try { tog.focus({ preventScroll: true }); } catch (e) {} }
 
   /* ── トグルを押したあと：自動にしたあとの流れの動画 ──
-     画面が横長なら横長版、縦長（スマホ）なら縦長版。入口を見ているあいだに先に読み込んでおく */
+     画面が横長なら横長版、縦長（スマホ）なら縦長版。
+     流しながら読み込むと、スマホの回線では途中で止まる（2026-10-12 深夜、iPhone で「議事録も」で止まって本編へ移った）。
+     だから入口を見ているあいだに動画をまるごと読み込んでおき、読み終わってから流す */
   function opKey() { return innerHeight > innerWidth ? 'p' : 'l'; }
   function opSrc(k) {
     var f = OPV && OPV[k];
@@ -1394,21 +1399,55 @@ html:not(.app) [data-words] .w { opacity: 1; }
     var r = (innerWidth / innerHeight) / f.ar, c = f.cover || [1, 1];
     return r >= c[0] && r <= c[1] ? 'cover' : 'contain';
   }
+  /* まるごと読み込む（読んだ割合を知らせながら） */
+  function fetchWhole(url, onProg) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      var total = +(r.headers.get('content-length') || 0), type = r.headers.get('content-type') || 'video/mp4';
+      if (!total || !r.body || !r.body.getReader) return r.blob();
+      var rd = r.body.getReader(), parts = [], got = 0;
+      var pump = function () {
+        return rd.read().then(function (x) {
+          if (x.done) return new Blob(parts, { type: type });
+          parts.push(x.value); got += x.value.byteLength; onProg(Math.min(1, got / total));
+          return pump();
+        });
+      };
+      return pump();
+    });
+  }
+  var opCache = {};   /* 向きごとに 1 本。もう一度入口を見るときにも使う */
+  function loadOpener(k) {
+    var src = opSrc(k);
+    if (!src) return null;
+    if (!opCache[k]) {
+      var o = opCache[k] = { src: src, prog: 0, url: null, last: performance.now() };
+      var run = FILE_PAGE ? Promise.reject(new Error('file')) : fetchWhole(src, function (r) { o.prog = r; o.last = performance.now(); });
+      /* 読み込みに失敗したときだけ、流しながら読み込む */
+      o.p = run.then(function (b) { o.url = URL.createObjectURL(b); o.prog = 1; return o; }, function () { o.url = src; o.prog = 1; return o; });
+    }
+    return opCache[k];
+  }
   function prepOpener() {
     if (RM || !OPV) return null;
     var k = opKey();
     if (G.opv && G.opKey === k) return G.opv;
-    var src = opSrc(k);
-    if (!src) return null;
+    var o = loadOpener(k);
+    if (!o) return null;
     if (G.opv) { try { G.opv.pause(); } catch (e) {} G.opv.remove(); }
+    /* 読み終わるまでは src を入れない（入れると、そちらでも読み込みが始まって回線を取り合う） */
     var v = D.createElement('video');
     v.muted = true; v.playsInline = true; v.preload = 'auto';
     v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('preload', 'auto');
-    v.className = 'op-v'; v.src = src; v.style.objectFit = opFit(k);
-    if (OPV[k].poster) v.poster = OPV[k].poster;
+    v.className = 'op-v'; v.style.objectFit = opFit(k);
     gOpVideo.appendChild(v);
-    G.opv = v; G.opKey = k;
-    try { v.load(); } catch (e) {}
+    G.opv = v; G.opKey = k; G.opReady = false;
+    o.p.then(function () {
+      if (G.opv !== v) return;
+      v.src = o.url;
+      try { v.load(); } catch (e) {}
+      G.opReady = true;
+    });
     return v;
   }
   function startOpener(why) {
@@ -1419,7 +1458,8 @@ html:not(.app) [data-words] .w { opacity: 1; }
     var v = prepOpener();
     pressToggle(.62);
     if (!v) { G.timer = gsap.delayedCall(RM ? .2 : .75, function () { exitGate('auto'); }); return; }
-    /* 押した瞬間に一度だけ再生して止めておく（省電力の設定のスマホでも、あとで再生できるように） */
+    /* 押した瞬間に一度だけ再生して止めておく（省電力の設定のスマホでも、あとで再生できるように）。
+       まだ読み込み中で src が無くても、押した操作の中で play() を呼んでおけば、あとで再生できる */
     G.opPlaying = false;
     try {
       var pp = v.play();
@@ -1448,9 +1488,33 @@ html:not(.app) [data-words] .w { opacity: 1; }
   }
   function playOpener() {
     var v = G.opv;
-    if (!v || G.stage !== 'opener') return;
+    if (!v || G.stage !== 'opener' || !G.open) return;
+    var bar = $('.op-load', gFlood), fill = bar && $('i', bar);
+    if (!G.opReady) {
+      /* まだ読み込み中：琥珀色の画面のまま、下の細い線で進み具合を見せて待つ。8 秒たっても少しも進まなければ本編へ */
+      var o = opCache[G.opKey], since = performance.now();
+      if (bar) gsap.to(bar, { autoAlpha: 1, duration: .3, delay: .2, overwrite: true });
+      var poll = function () {
+        if (G.stage !== 'opener' || !G.open) return;
+        if (fill) gsap.to(fill, { scaleX: o ? o.prog : 0, duration: .3, ease: 'power2.out', overwrite: true });
+        if (G.opReady) { G.timer = gsap.delayedCall(.32, playOpener); return; }
+        if (performance.now() - Math.max(since, o ? o.last : 0) > 8000) { exitGate('auto'); return; }
+        G.timer = gsap.delayedCall(.2, poll);
+      };
+      clearTimer(); poll();
+      return;
+    }
+    if (bar) gsap.to(bar, { autoAlpha: 0, duration: .25, overwrite: true });
     var started = false, dur = (OPV && OPV.dur) || 10;
     var leave = function () { if (G.stage === 'opener' && G.open) exitGate('auto'); };
+    /* 流れ始めたら、0.5 秒ごとに進んでいるかを見る。5 秒止まったままなら本編へ（途中で本編へ飛ばない） */
+    var lastT = -1, lastAt = 0;
+    var watch = function () {
+      if (G.stage !== 'opener' || !G.open) return;
+      if (v.currentTime > lastT + .01) { lastT = v.currentTime; lastAt = performance.now(); }
+      else if (performance.now() - lastAt > 5000) { leave(); return; }
+      G.timer = gsap.delayedCall(.5, watch);
+    };
     var go = function () {
       if (started || G.stage !== 'opener') return;
       started = true;
@@ -1459,7 +1523,7 @@ html:not(.app) [data-words] .w { opacity: 1; }
       gsap.fromTo(gFlood, { clipPath: 'inset(0% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 100%)', duration: .5, ease: 'expo.inOut', onComplete: function () { gsap.set(gFlood, { visibility: 'hidden' }); } });
       gsap.delayedCall(.25, function () { gate.classList.remove('on-amber'); });
       clearTimer();
-      G.timer = gsap.delayedCall(dur + 1.2, leave);
+      lastAt = performance.now(); watch();
     };
     /* 最後は黒く暗くなるので、暗くなり始めたら本編へ移る */
     var onTime = function () { if (v.currentTime >= dur - .45) { v.removeEventListener('timeupdate', onTime); leave(); } };
@@ -1470,8 +1534,9 @@ html:not(.app) [data-words] .w { opacity: 1; }
     G.opPlaying = true;
     try { v.currentTime = 0; } catch (e) {}
     var p = v.play(); if (p && p.catch) p.catch(leave);
-    /* 読み込みが遅いときは待ち続けずに本編へ */
-    G.timer = gsap.delayedCall(4, function () { if (!started) leave(); });
+    /* 読み込み済みなので、ふつうはすぐ始まる。6 秒たっても始まらなければ本編へ */
+    clearTimer();
+    G.timer = gsap.delayedCall(6, function () { if (!started) leave(); });
   }
   function stopOpener() {
     if (G.opv) { try { G.opv.pause(); } catch (e) {} }
@@ -1516,6 +1581,7 @@ html:not(.app) [data-words] .w { opacity: 1; }
     gsap.set($('.op-title', gFlood), { clearProps: 'transform' });
     gsap.set(gFlood, { visibility: 'hidden', clearProps: 'opacity' });
     gsap.set(gOpVideo, { visibility: 'hidden', yPercent: 0 });
+    var bar = $('.op-load', gFlood); if (bar) { gsap.set(bar, { autoAlpha: 0 }); gsap.set($('i', bar), { scaleX: 0 }); }
     stopOpener();
     gOp.hidden = true;
   }
@@ -1577,9 +1643,15 @@ html:not(.app) [data-words] .w { opacity: 1; }
     detectMotion().then(function (k) {
       G.motion = k;
       var l = G.layers.before; if (l.cur != null && G.open && G.stage === 'entry') startMedia(l[l.cur]);
-      /* 次の場面を先に読み込み、そのあとトグルのあとの動画も読み込んでおく */
-      G.layers.before.forEach(function (c, i) { var ext = mediaExt(c.info); if (ext) setTimeout(function () { getBlob(clipUrl(c.id, ext)).catch(function () {}); }, 600 + i * 450); });
-      setTimeout(function () { if (G.open && G.stage === 'entry') prepOpener(); }, 900);
+      /* 読み込む順番：いま見えている場面 → トグルのあとの動画（まるごと）→ 残りの場面。
+         同時に読み込むと、スマホの遅い回線ではどれも間に合わない */
+      var getClip = function (c) { var ext = c && mediaExt(c.info); return ext ? getBlob(clipUrl(c.id, ext)).then(function () {}, function () {}) : Promise.resolve(); };
+      var cl = G.layers.before;
+      getClip(cl[G.idx] || cl[0]).then(function () {
+        if (!RM && OPV) { if (G.open && G.stage === 'entry') prepOpener(); var o = loadOpener(opKey()); if (o) return o.p; }
+      }).then(function () {
+        return cl.reduce(function (pr, c) { return pr.then(function () { return getClip(c); }); }, Promise.resolve());
+      });
     });
     var rp = $('.ft-replay');
     if (rp) rp.addEventListener('click', function () { openGate(false); });
