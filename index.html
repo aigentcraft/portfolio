@@ -1,0 +1,1804 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="土屋 健太 ポートフォリオ">
+<meta property="og:description" content="工事会社のパソコン作業を、AI で自動にする。見積書・工事写真・安全書類・メール・月末の集計。AI 現場監督、建設業向けセミナー、kintone 業務アプリ、n8n による自動化、ハンズオン研修。">
+<meta property="og:url" content="https://aigentcraft.github.io/portfolio/">
+<meta property="og:image" content="https://aigentcraft.github.io/portfolio/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<title>土屋 健太 ポートフォリオ</title>
+<script>document.documentElement.classList.add("js");document.documentElement.lang="ja"</script>
+<meta name="description" content="工事会社のパソコン作業を、AI で自動にする。見積書・工事写真・安全書類・メール・月末の集計。AI 現場監督、建設業向けセミナー、kintone 業務アプリ、n8n による自動化、ハンズオン研修。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300..700&family=Noto+Sans+JP:wght@300..700&family=Shippori+Mincho:wght@500;600&display=swap">
+<style>
+/* v3 — Cortex の作りに合わせる（黒・生成り・琥珀 1 色、方眼の縦線、expo の動き） */
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-2: #161616;
+  --fg: #edebe6;
+  --soft: #b8b5ae;
+  --muted: #8e8b85;
+  --amber: #efa36b;
+  --green: #9fd3a8;
+  --line: rgba(237, 235, 230, .09);
+  --line-2: rgba(237, 235, 230, .18);
+  --ink: #0a0a0a;
+  --ease: cubic-bezier(.19, 1, .22, 1);
+  --f-sans: "Inter Tight", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --f-serif: "Instrument Serif", "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --f-min: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --pad: 20px;
+  color-scheme: dark;
+}
+@media (min-width: 768px) { :root { --pad: 32px; } }
+@media (min-width: 1024px) { :root { --pad: 40px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--f-sans); font-size: 15px; line-height: 1.85; letter-spacing: .02em;
+  font-feature-settings: "palt" 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip; line-break: strict;
+}
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+html.gate-open, html.gate-open body { overflow: hidden; }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; letter-spacing: inherit; }
+ul, ol { list-style: none; margin: 0; padding: 0; }
+h1, h2, h3, p, dl, dd, figure { margin: 0; }
+svg { display: block; }
+::selection { background: var(--amber); color: var(--ink); }
+:focus-visible { outline: 1px solid var(--amber); outline-offset: 3px; }
+.mono { font-family: var(--f-mono); font-feature-settings: normal; letter-spacing: .02em; }
+.wrap { width: 100%; max-width: 1440px; margin-inline: auto; padding-inline: var(--pad); }
+.skip { position: absolute; left: 12px; top: -60px; z-index: 200; background: var(--fg); color: var(--ink); padding: 10px 14px; }
+.skip:focus { top: 12px; }
+.img-tone { filter: saturate(.82) contrast(1.04); }
+
+/* 方眼の縦線とノイズ（常に全面） */
+.grid-lines { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.grid-lines .wrap { height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); }
+.grid-lines i { border-left: 1px solid rgba(255, 255, 255, .045); }
+.grid-lines i:last-child { border-right: 1px solid rgba(255, 255, 255, .045); }
+@media (max-width: 767px) {
+  .grid-lines .wrap { grid-template-columns: repeat(2, 1fr); }
+  .grid-lines i:nth-child(n+3) { display: none; }
+  .grid-lines i:nth-child(2) { border-right: 1px solid rgba(255, 255, 255, .045); }
+}
+.noise {
+  position: fixed; inset: 0; z-index: 70; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* 文字の大きさ（Cortex の比率を日本語に合わせて少し控えめに） */
+.t-display { font-size: clamp(2.35rem, 7.2vw, 7.4rem); font-weight: 420; line-height: 1.06; letter-spacing: -.045em; }
+.t-h1 { font-size: clamp(2.6rem, 6vw, 6rem); font-weight: 420; line-height: .96; letter-spacing: -.045em; }
+.t-h2 { font-size: clamp(1.85rem, 3.7vw, 3.33rem); font-weight: 450; line-height: 1.16; letter-spacing: -.035em; text-wrap: balance; }
+.t-statement { font-size: clamp(1.4rem, 2.55vw, 2.3rem); font-weight: 420; line-height: 1.5; letter-spacing: -.02em; }
+.t-h3 { font-size: clamp(1.2rem, 1.7vw, 1.6rem); font-weight: 450; line-height: 1.35; letter-spacing: -.02em; }
+.t-lead { font-size: clamp(1rem, 1.2vw, 1.12rem); line-height: 1.9; color: var(--soft); }
+.t-body { font-size: 15px; line-height: 1.95; color: var(--soft); max-width: 34em; text-wrap: pretty; }
+.min { font-family: var(--f-min); font-weight: 500; letter-spacing: -.07em; }
+.ln > .min { margin-left: -.1em; }
+.ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+.t-display, .t-h2, .t-h3, .g-line, .wl-t, .acc-t, .cr-m h3, .mq-big span, .mq-ft span { word-break: auto-phrase; }
+.ln > span { display: inline-block; will-change: transform; }
+
+/* ラベル（英数字は等幅の大文字、日本語は読める大きさで） */
+.lbl { display: flex; align-items: center; gap: 12px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); line-height: 1.4; }
+.lbl .jp { font-family: var(--f-sans); font-size: 13px; letter-spacing: .08em; text-transform: none; }
+.lbl .sep { color: var(--muted); letter-spacing: 0; }
+.dot { position: relative; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); flex: none; }
+.dot::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--amber); opacity: 0; animation: pulse 2.4s var(--ease) infinite; }
+@keyframes pulse { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(1.8); opacity: 0; } }
+
+/* ボタン（Cortex：右端の正方形の中で矢印が回る、文字は 2 段重ねで入れ替わる） */
+.btn { display: inline-flex; align-items: stretch; height: 56px; font-size: 15px; font-weight: 500; letter-spacing: .02em; white-space: nowrap; }
+.btn-l { display: flex; align-items: center; padding: 0 22px 0 24px; }
+.btn-i { display: grid; place-items: center; width: 56px; border-left: 1px solid rgba(10, 10, 10, .14); }
+.btn-i svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.btn--p { background: var(--fg); color: var(--ink); }
+.btn--s { border: 1px solid var(--line-2); background: rgba(10, 10, 10, .35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.btn--s .btn-i { border-left-color: var(--line-2); }
+.btn--sm { height: 46px; font-size: 14px; }
+.btn--sm .btn-l { padding: 0 18px 0 20px; }
+.btn--sm .btn-i { width: 46px; }
+.arr { transition: transform .5s var(--ease); }
+.btn:hover .arr, a:hover > .arr { transform: rotate(45deg); }
+.roll { position: relative; display: inline-block; overflow: hidden; height: 1.5em; line-height: 1.5em; vertical-align: top; }
+.roll > span { display: block; transition: transform .5s var(--ease); }
+.roll > span + span { position: absolute; left: 0; top: 100%; }
+a:hover .roll > span, button:hover .roll > span { transform: translateY(-100%); }
+
+/* ロゴ（トグルの印＋ aigentcraft） */
+.logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 500; font-size: 19px; letter-spacing: -.03em; }
+.logo-mark { width: 30px; height: 18px; flex: none; }
+.logo-mark rect { fill: none; stroke: currentColor; stroke-width: 2; }
+.logo-mark circle { fill: currentColor; }
+.logo-name { font-size: 13px; font-weight: 400; color: var(--soft); letter-spacing: .06em; margin-left: 4px; }
+
+/* ───────── 入口 ───────── */
+[hidden] { display: none !important; }
+.gate { position: fixed; inset: 0; z-index: 90; display: none; background: var(--bg); color: var(--fg); overflow: hidden; }
+html.js .gate { display: block; }
+html.js:not(.app) .gate { animation: gate-failsafe .4s 7s forwards; }
+@keyframes gate-failsafe { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+.gate.is-gone { display: none !important; }
+.clip { position: absolute; inset: 0; overflow: hidden; visibility: hidden; }
+.clip.is-on { visibility: visible; }
+.clip .cw { position: absolute; inset: 0; }
+.clip .cv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+
+/* 上の帯（ロゴ・注記・本編へ）はどの段でも出す */
+.g-top { position: absolute; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 24px; height: calc(72px + env(safe-area-inset-top, 0px)); padding-top: env(safe-area-inset-top, 0px); }
+.g-note { font-size: 12.5px; color: var(--soft); letter-spacing: .06em; margin-left: auto; }
+.g-skip { display: inline-flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px 0 16px; border: 1px solid var(--line-2); font-size: 14px; background: rgba(10,10,10,.3); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: border-color .5s var(--ease); }
+.g-skip:hover { border-color: rgba(237,235,230,.5); }
+.g-skip svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.g-top > * { transition: color .3s var(--ease), border-color .3s var(--ease), background-color .3s var(--ease); }
+.gate.on-amber .g-top { color: var(--ink); }
+.gate.on-amber .g-note { color: rgba(10,10,10,.75); }
+.gate.on-amber .g-skip { border-color: rgba(10,10,10,.4); background: transparent; }
+
+/* 入口のページ（1 ページ）：画面いっぱいに流れる手作業の動画＋場面の説明＋大きなトグル */
+.g-page { position: absolute; inset: 0; z-index: 2; background: var(--bg); overflow: hidden; }
+.g-media, .g-layer { position: absolute; inset: 0; }
+.g-media { overflow: hidden; }
+.g-shade { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(10,10,10,.95) 0, rgba(10,10,10,.8) 24%, rgba(10,10,10,.3) 56%, rgba(10,10,10,.08) 72%, rgba(10,10,10,.5) 100%),
+    linear-gradient(to right, rgba(10,10,10,.55) 0, rgba(10,10,10,0) 64%); }
+.g-shade::after { content: ""; position: absolute; inset: 0; background: rgba(32, 58, 96, .3); mix-blend-mode: multiply; }
+.g-page .s2-grid { z-index: 1; }
+.s2-grid { position: absolute; inset: 0; pointer-events: none; }
+.s2-grid .wrap { height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); }
+.s2-grid i { border-left: 1px solid rgba(255, 255, 255, .045); }
+.s2-grid i:last-child { border-right: 1px solid rgba(255, 255, 255, .045); }
+.g-in { position: absolute; left: 0; right: 0; bottom: calc(112px + env(safe-area-inset-bottom, 0px)); z-index: 2; display: flex; flex-direction: column; align-items: flex-start; }
+.g-lbl { display: flex; align-items: center; gap: 14px; font-size: 15px; letter-spacing: .08em; color: var(--fg); margin-bottom: 18px; }
+.g-time { font-size: 13px; color: var(--amber); padding: 4px 9px; border: 1px solid rgba(239,163,107,.55); letter-spacing: .06em; background: rgba(10,10,10,.35); }
+.g-line { position: relative; width: 100%; max-width: 20em; font-size: clamp(1.7rem, 3.4vw, 3.3rem); font-weight: 420; line-height: 1.22; letter-spacing: -.035em; min-height: 2.44em; text-wrap: balance; margin-bottom: clamp(26px, 4.4vh, 46px); }
+.g-line .gl { display: block; }
+.g-line .gl.is-out { position: absolute; left: 0; top: 0; right: 0; }
+.g-tog { width: min(880px, 100%); }
+.tog { --th: clamp(84px, 12vh, 118px); position: relative; display: flex; align-items: center; width: 100%; height: var(--th); padding: 0 48px 0 calc(var(--th) + 22px); border-radius: 999px; border: 1px solid rgba(237,235,230,.42); background: rgba(10,10,10,.34); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); overflow: hidden; isolation: isolate; transition: border-color .6s var(--ease); }
+.tog:hover { border-color: rgba(237,235,230,.75); }
+/* 琥珀色の中に黒い文字の写しを入れて、琥珀色の端と文字の色の境目をそろえる */
+.tog-fill { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; padding: inherit; background: var(--amber); color: var(--ink); border-radius: inherit; clip-path: inset(0 100% 0 0 round 999px); }
+.tog-knob { position: absolute; z-index: 2; left: 10px; top: 10px; width: calc(var(--th) - 22px); height: calc(var(--th) - 22px); border-radius: 50%; background: var(--fg); color: var(--ink); display: grid; place-items: center; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+.tog-knob svg { width: 30%; height: 30%; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.tog-text { font-size: clamp(1.9rem, 4.4vw, 4.4rem); font-weight: 420; letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
+.tog-text em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; font-size: 1.12em; }
+.tog[aria-checked="true"] { border-color: transparent; }
+.g-help { margin-top: 14px; font-size: 15px; color: var(--soft); letter-spacing: .04em; word-break: auto-phrase; }
+/* 場面の並び（下の細い帯）：いまの場面の線が伸びる。押すとその場面へ */
+.g-steps { position: absolute; left: 0; right: 0; bottom: calc(28px + env(safe-area-inset-bottom, 0px)); z-index: 2; display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 12px; }
+.g-steps li { position: relative; display: flex; align-items: baseline; gap: 10px; min-width: 0; padding-top: 14px; cursor: pointer; }
+.g-steps .pg { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: rgba(237,235,230,.2); overflow: hidden; }
+.g-steps .pg b { position: absolute; inset: 0; background: var(--amber); transform: scaleX(0); transform-origin: 0 50%; }
+.g-steps .i { font-size: 11px; color: var(--muted); letter-spacing: .1em; }
+.g-steps .t { min-width: 0; font-size: 14px; color: var(--soft); letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .5s var(--ease); }
+.g-steps li.is-on .i { color: var(--amber); }
+.g-steps li.is-on .t { color: var(--fg); }
+
+/* トグルを押したあと：琥珀色がトグルから広がり、自動にしたあとの流れの動画（10 秒）が流れる */
+.g-op { position: absolute; inset: 0; z-index: 4; overflow: hidden; }
+.op-video { position: absolute; inset: 0; z-index: 1; background: var(--bg); visibility: hidden; }
+.op-v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--bg); }
+.op-flood { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; background: var(--amber); color: var(--ink); visibility: hidden; pointer-events: none; }
+.op-title { font-size: clamp(2.6rem, 8.2vw, 8.6rem); font-weight: 420; line-height: 1.1; letter-spacing: -.055em; white-space: nowrap; transform-origin: 0 0; }
+.op-title em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; font-size: 1.1em; }
+
+@media (max-width: 767px) {
+  .g-top { height: calc(58px + env(safe-area-inset-top, 0px)); gap: 12px; }
+  .g-note { position: absolute; right: var(--pad); top: calc(58px + env(safe-area-inset-top, 0px)); font-size: 12px; }
+  .s2-grid .wrap { grid-template-columns: repeat(2, 1fr); }
+  .s2-grid i:nth-child(n+3) { display: none; }
+  .s2-grid i:nth-child(2) { border-right: 1px solid rgba(255, 255, 255, .045); }
+  .g-skip { margin-left: auto; height: 36px; font-size: 13px; }
+  .g-shade { background: linear-gradient(to top, rgba(10,10,10,.96) 0, rgba(10,10,10,.84) 34%, rgba(10,10,10,.3) 60%, rgba(10,10,10,.12) 76%, rgba(10,10,10,.55) 100%); }
+  .g-in { bottom: calc(74px + env(safe-area-inset-bottom, 0px)); }
+  .g-lbl { font-size: 13px; margin-bottom: 12px; gap: 10px; }
+  .g-time { font-size: 12px; padding: 3px 7px; }
+  .g-line { font-size: clamp(1.36rem, 6.3vw, 1.75rem); line-height: 1.32; letter-spacing: -.02em; min-height: 2.64em; margin-bottom: 22px; }
+  .g-tog { width: 100%; }
+  .tog { --th: 76px; padding: 0 20px 0 calc(var(--th) + 10px); transition: border-color .6s var(--ease), padding .9s var(--ease); }
+  /* スマホはトグルの幅が狭いので、押したら文字を左へ寄せて、つまみと重ならないようにする */
+  .tog[aria-checked="true"] { padding: 0 calc(var(--th) + 10px) 0 20px; }
+  .tog-knob { left: 8px; top: 8px; width: calc(var(--th) - 18px); height: calc(var(--th) - 18px); }
+  .tog-text { font-size: clamp(1.3rem, 6.5vw, 1.7rem); }
+  .g-help { font-size: 13px; margin-top: 10px; }
+  .g-steps { gap: 6px; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
+  .g-steps li { padding-top: 10px; }
+  .g-steps .i { display: none; }
+  .g-steps .t { font-size: 11px; letter-spacing: 0; }
+}
+/* 背の低い画面では文の高さを詰める */
+@media (max-height: 640px) { .g-line { min-height: 0; } .tog { --th: 68px; } }
+/* ───────── ヘッダー ───────── */
+.hd { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding-top: env(safe-area-inset-top, 0px); transition: transform .7s var(--ease), background-color .5s var(--ease); }
+.hd.is-solid { background: rgba(10,10,10,.75); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
+.hd.is-hidden { transform: translateY(-100%); }
+.hd-in { height: 72px; display: flex; align-items: center; gap: 24px; }
+.hd-nav { display: flex; gap: 32px; margin-inline: auto; font-size: 14px; letter-spacing: .06em; color: var(--soft); }
+.hd-nav a:hover { color: var(--fg); }
+@media (max-width: 860px) { .hd-nav { display: none; } .hd-in > .btn { margin-left: auto; } .logo-name { display: none; } }
+@media (max-width: 767px) { .hd-in { height: 58px; } }
+
+/* ───────── ヒーロー ───────── */
+.hero { position: relative; min-height: max(100svh, 720px); display: flex; flex-direction: column; overflow: hidden; z-index: 2; }
+.hero-bg { position: absolute; inset: 0; overflow: hidden; }
+.hero-bg img { width: 100%; height: 120%; object-fit: cover; object-position: 60% 40%; will-change: transform; }
+.hero-shade i { position: absolute; inset: 0; pointer-events: none; }
+.hero-shade .s1 { background: rgba(0,0,0,.25); }
+.hero-shade .s2 { background: linear-gradient(to right, rgba(10,10,10,.9), rgba(10,10,10,.4) 50%, rgba(10,10,10,0)); }
+.hero-shade .s3 { bottom: auto; height: 192px; background: linear-gradient(to bottom, rgba(10,10,10,.8), rgba(10,10,10,0)); }
+.hero-shade .s4 { top: auto; height: 55%; background: linear-gradient(to top, rgba(10,10,10,.95), rgba(10,10,10,0)); }
+.hero-in { position: relative; flex: 1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; align-items: end; padding-top: min(128px, 15vh); padding-bottom: min(56px, 6vh); }
+.hero-copy { grid-column: 1 / 9; }
+.hero-copy .lbl { margin-bottom: 28px; }
+.hero-h1 { max-width: 9.5em; font-size: clamp(2.35rem, min(7.2vw, 11.2vh), 7.4rem); }
+.hero-lead { max-width: 33em; margin-top: 30px; }
+.hero-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+.hero-card { grid-column: 10 / 13; justify-self: end; width: 290px; padding: 8px; border: 1px solid var(--line-2); background: rgba(10,10,10,.3); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.hc-img { aspect-ratio: 4 / 5; overflow: hidden; }
+.hc-img img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; }
+.hero-card figcaption { display: flex; justify-content: space-between; gap: 16px; padding: 12px 8px 6px; font-size: 13px; line-height: 1.6; color: var(--soft); }
+.hero-card figcaption .mono { font-size: 11px; color: var(--muted); }
+.hero-bar { position: relative; border-top: 1px solid var(--line); background: rgba(10,10,10,.4); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.hb-in { display: flex; align-items: center; gap: 32px; height: 120px; }
+.hb-lbl { flex: none; font-size: 13px; letter-spacing: .08em; color: var(--soft); }
+.hb-mq { flex: 1; min-width: 0; overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent); }
+.mq-track { display: flex; width: max-content; will-change: transform; }
+.hb-mq .mq-track span { padding: 0 28px; font-size: 17px; color: var(--soft); white-space: nowrap; letter-spacing: .02em; }
+.hb-mq .mq-track span::before { content: "＊"; margin-right: 10px; color: var(--muted); font-size: 12px; }
+.hb-rotw { flex: none; display: flex; align-items: center; gap: 18px; }
+.hb-rh { font-size: 12.5px; letter-spacing: .08em; color: var(--soft); writing-mode: vertical-rl; }
+.hb-rot { position: relative; flex: none; width: 260px; height: 92px; overflow: hidden; }
+.hb-rot li { position: absolute; left: 0; right: 0; display: flex; align-items: center; gap: 0; height: 23px; font-size: 14px; color: var(--muted); white-space: nowrap; transition: color .6s var(--ease), transform .6s var(--ease); }
+.hb-rot li::before { content: ""; width: 0; height: 1px; background: var(--amber); margin-right: 0; transition: width .6s var(--ease), margin .6s var(--ease); }
+.hb-rot li.is-on { color: var(--fg); }
+.hb-rot li.is-on::before { width: 20px; margin-right: 12px; }
+.hb-scroll { flex: none; display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 10px; letter-spacing: .2em; color: var(--muted); writing-mode: vertical-rl; }
+.hb-scroll i { width: 1px; height: 36px; background: var(--line-2); position: relative; overflow: hidden; writing-mode: horizontal-tb; }
+.hb-scroll i::after { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 100%; background: var(--fg); animation: cue 2.2s var(--ease) infinite; transform-origin: 50% 0; }
+@keyframes cue { 0% { transform: scaleY(0); transform-origin: 50% 0; } 50% { transform: scaleY(1); transform-origin: 50% 0; } 51% { transform-origin: 50% 100%; } 100% { transform: scaleY(0); transform-origin: 50% 100%; } }
+@media (max-width: 1023px) {
+  .hero-copy { grid-column: 1 / -1; }
+  .hero-card { display: none; }
+  .hb-rotw, .hb-scroll { display: none; }
+}
+@media (max-height: 860px) and (min-width: 1024px) { .hb-in { height: 96px; } .hb-rot { height: 92px; } }
+@media (max-width: 767px) {
+  .hero-in { padding-top: 96px; padding-bottom: 36px; }
+  .hero-lead { margin-top: 22px; }
+  .hero-btns { margin-top: 28px; }
+  .hero-btns .btn { flex: 1 1 auto; }
+  .hb-in { height: 76px; gap: 16px; }
+  .hb-lbl { display: none; }
+  .hb-mq .mq-track span { font-size: 15px; padding: 0 18px; }
+}
+
+/* ───────── セクション共通 ───────── */
+main { position: relative; z-index: 2; }
+.sec { position: relative; padding-block: 112px; border-top: 1px solid var(--line); }
+@media (min-width: 768px) { .sec { padding-block: 160px; } }
+.sec-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
+.sec-lbl { grid-column: 1 / 4; align-self: start; padding-top: .7em; }
+.sec-lbl .mono { color: var(--amber); }
+.sec-body { grid-column: 4 / 13; min-width: 0; }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+.sec-aside { justify-self: end; max-width: 26em; }
+@media (max-width: 1023px) {
+  .sec-lbl, .sec-body { grid-column: 1 / -1; }
+  .sec-lbl { padding-top: 0; margin-bottom: 8px; }
+  .sec-head { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .sec-aside { justify-self: start; }
+}
+[data-words] .w { opacity: .16; }
+html:not(.app) [data-words] .w { opacity: 1; }
+.note { font-size: 13px; line-height: 1.8; color: var(--soft); }
+
+/* 01 */
+.about-sub { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 40px; margin-top: 56px; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 104px; border-top: 1px solid var(--line); }
+.stats > div { padding: 36px 24px 8px; min-width: 0; }
+.stats > div + div { border-left: 1px solid var(--line); }
+.stats > div:first-child { padding-left: 0; }
+.stats dt { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+.stats dt small { font-size: .32em; letter-spacing: 0; color: var(--soft); font-weight: 400; }
+.stats dd { margin-top: 18px; font-size: 14px; line-height: 1.7; color: var(--soft); max-width: 17em; }
+.stats dt .pre { margin-right: .08em; }
+@media (max-width: 1023px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 72px; }
+  .stats > div:nth-child(3) { border-left: 0; padding-left: 0; }
+  .stats > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+
+/* 02 */
+.caps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: 88px; background: var(--line); border: 1px solid var(--line); }
+.cap { position: relative; background: var(--bg); min-height: 290px; padding: 32px; display: flex; flex-direction: column; }
+.cap::before { content: ""; position: absolute; left: 0; top: -1px; height: 1px; width: 100%; background: var(--amber); transform: scaleX(0); transform-origin: 0 50%; transition: transform .7s var(--ease); }
+.cap:hover::before { transform: scaleX(1); }
+.cap-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: auto; }
+.cap-ic { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line-2); transition: border-color .7s var(--ease), color .7s var(--ease); }
+.cap:hover .cap-ic { border-color: var(--amber); color: var(--amber); }
+.cap-ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.cap-n { font-size: 11px; color: var(--muted); }
+.cap h3 { margin-top: 56px; }
+.cap p { margin-top: 12px; font-size: 15px; line-height: 1.85; color: var(--soft); max-width: 22em; }
+@media (max-width: 1023px) { .caps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .caps { grid-template-columns: minmax(0, 1fr); margin-top: 56px; } .cap { min-height: 0; padding: 24px; } .cap h3 { margin-top: 36px; } }
+
+/* 03 実演 */
+.demo { padding-block: 0; }
+.demo-pin { min-height: 100vh; display: flex; align-items: center; padding-block: 120px; }
+.demo-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; align-items: center; }
+.demo-l { grid-column: 1 / 6; min-width: 0; }
+.demo-l .lbl { margin-bottom: 28px; }
+.demo-l .lbl .mono { color: var(--amber); }
+.demo-steps { margin-top: 48px; }
+.demo-steps li { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px; padding: 22px 0 24px; border-top: 1px solid var(--line); color: var(--muted); transition: color .7s var(--ease); }
+.demo-steps li .mono { font-size: 11px; padding-top: 6px; }
+.demo-steps h3 { font-size: 19px; font-weight: 450; letter-spacing: -.01em; }
+.demo-steps p { margin-top: 6px; font-size: 14px; line-height: 1.8; max-height: 0; opacity: 0; overflow: hidden; transition: max-height .8s var(--ease), opacity .6s var(--ease); }
+.demo-steps li.is-on { color: var(--fg); }
+.demo-steps li.is-on p { max-height: 6em; opacity: 1; color: var(--soft); }
+.ds-bar { position: absolute; left: 0; right: 0; top: -1px; height: 1px; }
+.ds-bar b { position: absolute; inset: 0; background: var(--amber); transform: scaleX(0); transform-origin: 0 50%; transition: transform 1s var(--ease); }
+.demo-steps li.is-on .ds-bar b { transform: scaleX(1); }
+.demo-r { grid-column: 7 / 13; min-width: 0; }
+.demo-r .note { margin-top: 14px; }
+.win { border: 1px solid var(--line-2); background: var(--surface); }
+.win-bar { display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border-bottom: 1px solid var(--line); }
+.win-bar > i { width: 8px; height: 8px; border-radius: 50%; background: rgba(237,235,230,.16); }
+.win-bar .mono { margin-left: 10px; font-size: 11px; color: var(--soft); }
+.win-live { margin-left: auto !important; display: flex; align-items: center; gap: 7px; color: var(--amber) !important; }
+.win-live b { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); animation: livep 1.6s ease-in-out infinite; }
+@keyframes livep { 50% { opacity: .3; } }
+.win-body { display: grid; grid-template-columns: minmax(0, 46%) minmax(0, 1fr); gap: 0; }
+.win-photo { grid-column: 1; grid-row: 1; position: relative; align-self: start; aspect-ratio: 4 / 3; overflow: hidden; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.rd { grid-column: 1; grid-row: 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: start; border-right: 1px solid var(--line); }
+.rd > div { display: flex; justify-content: space-between; gap: 8px; padding: 9px 12px; border-bottom: 1px solid var(--line); font-size: 12px; opacity: .25; transition: opacity .6s var(--ease), color .6s var(--ease); }
+.rd > div:nth-child(odd) { border-right: 1px solid var(--line); }
+.rd dt { color: var(--soft); font-family: var(--f-sans); }
+.rd dd { color: var(--fg); }
+.win[data-stage="0"] .rd > div:nth-child(-n+2), .win[data-stage="1"] .rd > div, .win[data-stage="2"] .rd > div { opacity: 1; }
+.win.pre .rd > div { opacity: .25 !important; }
+.win[data-stage="1"] .rd-ng dd, .win[data-stage="2"] .rd-ng dd { color: var(--amber); }
+.win-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.8) contrast(1.05) brightness(.85); }
+.ocr { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); border: 1.5px solid var(--fg); opacity: 0; transform: scale(1.15); transition: opacity .5s var(--ease), transform .7s var(--ease), border-color .5s; }
+.win[data-stage="0"] .ocr, .win[data-stage="1"] .ocr, .win[data-stage="2"] .ocr { opacity: 1; transform: none; }
+.win[data-stage="0"] .ocr:nth-child(3) { transition-delay: .08s; } .win[data-stage="0"] .ocr:nth-child(4) { transition-delay: .16s; }
+.win[data-stage="0"] .ocr:nth-child(5) { transition-delay: .24s; } .win[data-stage="0"] .ocr:nth-child(6) { transition-delay: .32s; } .win[data-stage="0"] .ocr:nth-child(7) { transition-delay: .4s; }
+.win[data-stage="1"] .ocr-ng, .win[data-stage="2"] .ocr-ng { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(239,163,107,.25); }
+.win.pre .ocr { opacity: 0 !important; }
+.log { grid-column: 2; grid-row: 1 / span 2; padding: 12px 14px; font-size: 11.5px; line-height: 1.5; min-height: 290px; }
+.log li { display: grid; grid-template-columns: 56px 30px minmax(0, 1fr); gap: 6px; padding: 4px 0; opacity: 0; transform: translateY(8px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.log li time { color: var(--muted); }
+.log li b { font-weight: 500; color: var(--soft); font-family: var(--f-sans); font-size: 11px; }
+.log li span { color: var(--fg); font-family: var(--f-sans); font-size: 12px; letter-spacing: .01em; }
+.log li.warn b, .log li.warn span { color: var(--amber); }
+.log li.ok b, .log li.ok span { color: var(--green); }
+.log li.is-on { opacity: 1; transform: none; }
+.win-flow { display: flex; align-items: center; gap: 0; padding: 14px 16px; border-top: 1px solid var(--line); font-size: 11px; overflow: hidden; }
+.fn { flex: none; padding: 4px 8px; border: 1px solid var(--line-2); color: var(--muted); transition: color .6s, border-color .6s, background-color .6s; font-family: var(--f-sans); font-size: 11.5px; }
+.fn.is-on { color: var(--ink); background: var(--fg); border-color: var(--fg); }
+.fl { flex: 1; min-width: 10px; height: 1px; background-image: linear-gradient(to right, var(--line-2) 50%, transparent 50%); background-size: 8px 1px; }
+.fl.is-on { background-image: linear-gradient(to right, var(--amber) 50%, transparent 50%); animation: dash 1.2s linear infinite; }
+@keyframes dash { to { background-position: 16px 0; } }
+@media (max-width: 1023px) {
+  .demo-pin { min-height: 0; padding-block: 112px; }
+  .demo-l, .demo-r { grid-column: 1 / -1; }
+  .demo-r { margin-top: 40px; }
+}
+@media (max-width: 640px) {
+  .win-body { grid-template-columns: minmax(0, 1fr); }
+  .win-photo, .rd, .log { grid-column: 1; grid-row: auto; }
+  .win-photo, .rd { border-right: 0; }
+  .log { min-height: 0; }
+  .log li { grid-template-columns: 54px 30px minmax(0, 1fr); }
+  .win-flow { padding: 12px 10px; flex-wrap: nowrap; }
+  .fn { padding: 3px 6px; font-size: 11px; }
+  .fl { min-width: 6px; }
+}
+
+/* 04 進め方 */
+.flow { overflow: hidden; }
+.mq-big { margin: -40px 0 96px; overflow: hidden; }
+.mq-big .mq-track { align-items: center; }
+.mq-big span { font-size: clamp(3rem, 7.6vw, 7rem); font-weight: 420; letter-spacing: -.05em; line-height: 1.1; padding: 0 .3em; white-space: nowrap; }
+.mq-big i { width: .32em; height: .32em; border-radius: 50%; background: var(--amber); font-size: clamp(3rem, 7.6vw, 7rem); flex: none; }
+.flow-st { max-width: 24em; }
+.flow-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; margin-top: 88px; align-items: start; }
+.acc { grid-column: 1 / 7; border-bottom: 1px solid var(--line); }
+.acc-i { border-top: 1px solid var(--line); }
+.acc-h { width: 100%; display: grid; grid-template-columns: 56px minmax(0, 1fr) 24px; align-items: center; padding: 28px 0; text-align: left; }
+.acc-h .mono { font-size: 11px; color: var(--muted); }
+.acc-t { font-size: clamp(1.25rem, 1.9vw, 1.75rem); font-weight: 450; letter-spacing: -.02em; transition: transform .6s var(--ease); }
+.acc-h:hover .acc-t { transform: translateX(8px); }
+.acc-pm { position: relative; width: 16px; height: 16px; justify-self: end; }
+.acc-pm::before, .acc-pm::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: currentColor; }
+.acc-pm::after { transform: rotate(90deg); transition: transform .6s var(--ease); }
+.acc-i.is-open .acc-pm::after { transform: rotate(90deg) scaleX(0); }
+.acc-i.is-open .acc-h .mono { color: var(--amber); }
+.acc-b { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .6s var(--ease); }
+.acc-b > div { overflow: hidden; min-height: 0; }
+.acc-b p { padding: 0 24px 32px 56px; font-size: 14.5px; line-height: 1.9; color: var(--soft); max-width: 34em; }
+.acc-i.is-open .acc-b { grid-template-rows: 1fr; }
+.flow-ph { grid-column: 8 / 13; position: sticky; top: 112px; border: 1px solid var(--line-2); background: var(--surface); overflow: hidden; }
+.fp-in { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+.fp-t { margin-left: 10px; font-size: 11px; color: var(--soft); }
+.flow-ph figure { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s var(--ease); }
+.flow-ph figure img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; transform: scale(1.5); transform-origin: 0 0; transition: transform 1.4s var(--ease); filter: saturate(.8) brightness(.72) contrast(1.05); }
+.flow-ph figure.is-on { opacity: 1; }
+.flow-ph figure.is-on img { transform: scale(1.36); }
+.flow-ph figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 18px 14px; font-size: 12.5px; color: var(--fg); background: linear-gradient(to top, rgba(10,10,10,.9), rgba(10,10,10,0)); }
+@media (max-width: 1023px) {
+  .acc, .flow-ph { grid-column: 1 / -1; }
+  .flow-ph { position: relative; top: 0; margin-top: 24px; }
+  .mq-big { margin: -24px 0 64px; }
+}
+
+/* 05 実演の数字 */
+.num-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 56px; align-items: start; }
+.num-l .t-body { margin-top: 28px; }
+.num-risk { display: flex; align-items: flex-end; gap: 18px; margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); }
+.num-risk .t-h1 { font-size: clamp(3rem, 5vw, 4.8rem); color: var(--fg); }
+.num-risk span:last-child { font-size: 13.5px; line-height: 1.75; color: var(--soft); max-width: 16em; padding-bottom: 6px; }
+.nums { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.nums li { background: var(--bg); padding: 28px; min-height: 210px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+.n-k { font-size: 14px; letter-spacing: .06em; color: var(--soft); }
+.n-v { display: flex; flex-direction: column; gap: 14px; }
+.n-v small { display: block; font-size: 12.5px; letter-spacing: .06em; color: var(--soft); margin-bottom: 4px; font-family: var(--f-sans); }
+.n-v s { font-size: 17px; color: var(--soft); text-decoration-thickness: 1.5px; }
+.n-v b { display: block; white-space: nowrap; font-size: clamp(2.1rem, 3.7vw, 3.7rem); font-weight: 420; letter-spacing: -.045em; line-height: 1; color: var(--amber); }
+@media (max-width: 1023px) { .num-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .nums li { min-height: 0; padding: 20px; } }
+
+/* 06 実績 */
+.wl { margin-top: 88px; border-bottom: 1px solid var(--line); }
+.wl-i { position: relative; border-top: 1px solid var(--line); }
+.wl-h { position: relative; width: 100%; display: grid; grid-template-columns: 64px minmax(0, 1.1fr) minmax(0, 1fr) 96px 28px; align-items: center; gap: 16px; padding: 30px 0; text-align: left; isolation: isolate; }
+.wl-h::before { content: ""; position: absolute; inset: 0 calc(var(--pad) * -1); background: var(--surface-2); transform: scaleY(0); transform-origin: 50% 100%; transition: transform .5s var(--ease); z-index: -1; }
+.wl-h:hover::before, .wl-i.is-open .wl-h::before { transform: scaleY(1); }
+.wl-n { font-size: 11px; color: var(--muted); }
+.wl-t { font-size: clamp(1.25rem, 2.1vw, 2rem); font-weight: 450; letter-spacing: -.025em; line-height: 1.3; transition: transform .6s var(--ease); }
+.wl-h:hover .wl-t { transform: translateX(12px); }
+.wl-d { font-size: 14px; color: var(--soft); line-height: 1.6; }
+.wl-y { font-size: 13px; color: var(--soft); text-align: right; }
+.wl-pm { position: relative; width: 14px; height: 14px; justify-self: end; color: var(--soft); }
+.wl-pm::before, .wl-pm::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: currentColor; }
+.wl-pm::after { transform: rotate(90deg); transition: transform .6s var(--ease); }
+.wl-i.is-open .wl-pm { color: var(--amber); }
+.wl-i.is-open .wl-pm::after { transform: rotate(90deg) scaleX(0); }
+.wl-b { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .7s var(--ease); }
+.wl-b > div { overflow: hidden; min-height: 0; }
+.wl-i.is-open .wl-b { grid-template-rows: 1fr; }
+.wl-in { display: grid; grid-template-columns: 64px minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; padding: 4px 0 48px; }
+.wl-text { grid-column: 2; display: flex; flex-direction: column; gap: 14px; }
+.wl-text p { font-size: 14.5px; line-height: 1.95; color: var(--soft); max-width: 34em; }
+.wl-kv { grid-column: 3; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.wl-kv > div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.wl-kv dt { font-size: 13px; color: var(--soft); }
+.wl-kv dd { margin-top: 4px; font-size: 19px; letter-spacing: -.01em; color: var(--fg); }
+.wl-kv dd small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--soft); letter-spacing: .02em; }
+.wl-cur { position: fixed; left: 0; top: 0; z-index: 40; width: 280px; height: 200px; pointer-events: none; opacity: 0; transform: scale(.75); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+.wl-cur.is-on { opacity: 1; transform: none; }
+.wl-cur-in { position: absolute; inset: 0; overflow: hidden; border: 1px solid var(--line-2); background: var(--surface); }
+.wl-cur-in img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; opacity: 0; transform: scale(1.1); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.wl-cur-in img.is-on { opacity: 1; transform: none; }
+@media not all and (hover: hover) and (pointer: fine) { .wl-cur { display: none; } }
+@media (max-width: 1023px) {
+  .wl-h { grid-template-columns: 40px minmax(0, 1fr) 28px; row-gap: 6px; padding: 24px 0; }
+  .wl-d { grid-column: 2; grid-row: 2; }
+  .wl-y { grid-column: 2; grid-row: 3; text-align: left; }
+  .wl-pm { grid-column: 3; grid-row: 1; }
+  .wl-in { grid-template-columns: minmax(0, 1fr); padding: 0 0 36px; }
+  .wl-text, .wl-kv { grid-column: 1; }
+  .wl-h:hover .wl-t { transform: none; }
+}
+
+/* 07 経歴 */
+.cr { margin-top: 88px; border-bottom: 1px solid var(--line); }
+.cr li { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; padding: 30px 0; border-top: 1px solid var(--line); }
+.cr-y { grid-column: 1 / 4; font-size: 13px; color: var(--soft); padding-top: .5em; }
+.cr-m { grid-column: 4 / 13; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.cr-m h3 { font-size: clamp(1.2rem, 1.8vw, 1.65rem); font-weight: 450; letter-spacing: -.02em; line-height: 1.4; }
+.cr-m h3 small { display: block; margin-top: 6px; font-size: 13px; color: var(--soft); letter-spacing: .04em; font-weight: 400; }
+.cr-m p { font-size: 14px; line-height: 1.9; color: var(--soft); }
+.cr-now .cr-y { color: var(--amber); }
+.cr-act { margin-top: 56px; padding: 0; }
+.cr-act-h { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; color: var(--soft); }
+.cr-act-h .mono { font-size: 12px; color: var(--soft); }
+.cr-act-h p:first-child .mono { font-size: 20px; color: var(--fg); letter-spacing: -.03em; margin-right: 6px; }
+.cr-cv { width: 100%; height: 64px; margin-top: 16px; display: block; }
+.cr-act-f { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; color: var(--muted); }
+.cr-kv { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: 72px; background: var(--line); border: 1px solid var(--line); }
+.cr-kv > div { background: var(--bg); padding: 24px; }
+.cr-kv dt { font-size: 13px; color: var(--soft); }
+.cr-kv dd { margin-top: 10px; font-size: 14px; line-height: 1.85; color: var(--fg); }
+@media (max-width: 1023px) {
+  .cr li { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .cr-y, .cr-m { grid-column: 1; }
+  .cr-m { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .cr-kv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) { .cr-kv { grid-template-columns: minmax(0, 1fr); } }
+
+/* ご相談 */
+.cta { position: relative; min-height: 78svh; display: flex; align-items: flex-end; overflow: hidden; border-top: 1px solid var(--line); }
+.cta-bg { position: absolute; inset: 0; overflow: hidden; }
+.cta-bg img { position: absolute; left: 0; right: 0; top: -12%; bottom: -12%; width: 100%; height: 124%; object-fit: cover; }
+.cta-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.95) 10%, rgba(10,10,10,.55) 60%, rgba(10,10,10,.75)), rgba(0,0,0,.25); }
+.cta-in { position: relative; padding-block: 140px 88px; }
+.cta-h { margin-top: 28px; max-width: 12em; }
+.cta-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px 64px; align-items: end; margin-top: 56px; }
+.cta-row .t-lead { max-width: 30em; }
+.mail { font-size: clamp(1.25rem, 2.2vw, 1.9rem); letter-spacing: -.01em; color: var(--fg); user-select: all; }
+.cta-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.cp-msg { min-height: 1.6em; margin-top: 10px; font-size: 13px; color: var(--amber); }
+@media (max-width: 1023px) { .cta-row { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 767px) { .cta-in { padding-block: 112px 64px; } .cta-btns .btn { flex: 1 1 100%; } .mail { overflow-wrap: anywhere; } }
+
+/* フッター */
+.ft { position: relative; z-index: 2; border-top: 1px solid var(--line); overflow: hidden; }
+.mq-ft { padding: 40px 0; border-bottom: 1px solid var(--line); overflow: hidden; }
+.mq-ft .mq-track { align-items: center; }
+.mq-ft span { font-size: clamp(2.2rem, 4.6vw, 4.4rem); font-weight: 420; letter-spacing: -.045em; padding: 0 .35em; white-space: nowrap; line-height: 1.15; }
+.mq-ft i { width: .3em; height: .3em; border-radius: 50%; background: var(--amber); font-size: clamp(2.2rem, 4.6vw, 4.4rem); flex: none; }
+.ft-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding-top: 72px; }
+.ft-cols > div:nth-child(3) { grid-column: 3 / 5; }
+.ft-h { font-size: 11px; letter-spacing: .14em; color: var(--muted); margin-bottom: 18px; }
+.ft-cols li { font-size: 14px; line-height: 2.1; color: var(--soft); }
+.ft-cols a:hover { color: var(--fg); }
+.ft-about p:not(.ft-h) { font-size: 13.5px; line-height: 1.9; color: var(--soft); max-width: 34em; }
+.ft-replay { margin-top: 16px; font-size: 13.5px; color: var(--fg); border-bottom: 1px solid var(--line-2); padding-bottom: 2px; }
+.ft-replay:hover { border-color: var(--amber); }
+.ft-giant { display: flex; align-items: center; gap: .14em; padding-top: 88px; padding-bottom: 16px; font-size: clamp(3rem, 16.4vw, 16rem); font-weight: 450; letter-spacing: -.065em; line-height: .8; }
+.ft-giant .logo-mark { width: 1.18em; height: .7em; flex: none; }
+.ft-giant .logo-mark rect { stroke-width: 2.6; }
+.ft-bottom { display: flex; justify-content: space-between; gap: 16px; padding-block: 24px 32px; font-size: 11px; letter-spacing: .1em; color: var(--muted); border-top: 1px solid var(--line); margin-top: 24px; }
+@media (max-width: 767px) {
+  .ft-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ft-cols > div:nth-child(2), .ft-cols > div:nth-child(3) { grid-column: 1 / -1; }
+}
+
+/* 動きを減らす設定 */
+@media (prefers-reduced-motion: reduce) {
+  .dot::after, .hb-scroll i::after, .win-live b, .fl.is-on, .caret { animation: none; }
+  .acc-b, .wl-b { transition: none; }
+}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<div class="grid-lines" aria-hidden="true"><div class="wrap"><i></i><i></i><i></i><i></i></div></div>
+<div class="noise" aria-hidden="true"></div>
+
+<!-- 入口（1 ページ）：画面いっぱいに手作業の場面の動画が次々に流れ、その上に場面の説明と大きなトグル。
+     押すと、琥珀色がトグルから広がり、自動にしたあとの流れの動画（10 秒）が流れて本編へ -->
+<section id="gate" class="gate" aria-label="入口" data-stage="entry">
+  <div class="g-page">
+    <div class="g-media" aria-hidden="true"><div class="g-layer g-before"></div></div>
+    <div class="g-shade" aria-hidden="true"></div>
+    <div class="s2-grid" aria-hidden="true"><div class="wrap"><i></i><i></i><i></i><i></i></div></div>
+    <div class="g-in wrap">
+      <p class="g-lbl g-r"><span class="g-time mono" aria-hidden="true">19:42</span><span class="g-task">見積書</span></p>
+      <p class="g-line" aria-live="polite"></p>
+      <div class="g-tog g-r">
+        <button class="tog" type="button" role="switch" aria-checked="false" aria-label="work with aigentcraft（押すと、AI に任せた場合の流れを再生して、実績の紹介に移ります）">
+          <span class="tog-fill" aria-hidden="true"><span class="tog-text tog-ink">work with <em>aigentcraft</em></span></span>
+          <span class="tog-knob" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="tog-text" aria-hidden="true">work with <em>aigentcraft</em></span>
+        </button>
+        <p class="g-help">押すと、AI に任せた場合の流れを再生します（約 10 秒）</p>
+      </div>
+    </div>
+    <ol class="g-steps wrap g-r" aria-label="手作業の場面"></ol>
+  </div>
+
+  <!-- トグルを押したあと：自動にしたあとの流れ（HyperFrames で作った動画） -->
+  <div class="g-op" hidden aria-hidden="true">
+    <div class="op-video"></div>
+    <div class="op-flood"><p class="op-title">work with <em>aigentcraft</em></p></div>
+  </div>
+
+  <div class="g-top wrap">
+    <span class="logo g-rise"><svg class="logo-mark" viewBox="0 0 34 20" aria-hidden="true"><rect x="1" y="1" width="32" height="18" rx="9"/><circle cx="24" cy="10" r="5.5"/></svg><span class="logo-word">aigentcraft</span></span>
+    <span class="g-note g-rise">映像は AI で作ったイメージです</span>
+    <button class="g-skip g-rise" type="button"><span>本編へ</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+  </div>
+</section>
+
+<header class="hd" id="hd">
+  <div class="hd-in wrap">
+    <a class="logo hd-i" href="#top" aria-label="aigentcraft　土屋 健太（ページの先頭へ）"><svg class="logo-mark" viewBox="0 0 34 20" aria-hidden="true"><rect x="1" y="1" width="32" height="18" rx="9"/><circle cx="24" cy="10" r="5.5"/></svg><span class="logo-word">aigentcraft</span><span class="logo-name">土屋 健太</span></a>
+    <nav class="hd-nav" aria-label="ページ内の移動">
+      <a class="hd-i" href="#can"><span class="roll"><span>できること</span><span aria-hidden="true">できること</span></span></a>
+      <a class="hd-i" href="#demo"><span class="roll"><span>実演</span><span aria-hidden="true">実演</span></span></a>
+      <a class="hd-i" href="#works"><span class="roll"><span>実績</span><span aria-hidden="true">実績</span></span></a>
+      <a class="hd-i" href="#career"><span class="roll"><span>経歴</span><span aria-hidden="true">経歴</span></span></a>
+    </nav>
+    <a class="btn btn--p btn--sm hd-i" href="#contact"><span class="btn-l"><span class="roll"><span>相談する</span><span aria-hidden="true">相談する</span></span></span><span class="btn-i"><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ヒーロー -->
+  <section id="top" class="hero" aria-label="土屋 健太">
+    <div class="hero-bg" aria-hidden="true"><img src="assets/hero.jpg" alt="" class="img-tone"></div>
+    <div class="hero-shade" aria-hidden="true"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i></div>
+    <div class="hero-in wrap">
+      <div class="hero-copy">
+        <p class="lbl hero-r"><span class="dot"></span><span>AI Ops Manager</span><span class="sep">／</span><span class="jp">土屋 健太</span></p>
+        <h1 class="t-display hero-h1"><span class="ln"><span>工事会社の</span></span><span class="ln"><span>パソコン作業を、</span></span><span class="ln"><span class="min">自動にする。</span></span></h1>
+        <p class="t-lead hero-lead hero-r">施工管理、マンション管理、不動産の売買仲介を経て、2023 年から個人事業として、AI による業務の自動化と、ハンズオン形式の研修を行っています。</p>
+        <div class="hero-btns hero-r">
+          <a class="btn btn--p" href="#contact"><span class="btn-l"><span class="roll"><span>相談する</span><span aria-hidden="true">相談する</span></span></span><span class="btn-i"><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+          <a class="btn btn--s" href="#works"><span class="btn-l"><span class="roll"><span>実績を見る</span><span aria-hidden="true">実績を見る</span></span></span><span class="btn-i"><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+        </div>
+      </div>
+      <figure class="hero-card hero-r">
+        <div class="hc-img"><img src="assets/board_ng.webp" alt="工事黒板の写真。工種 基礎工、種別 基礎砕石 厚さ、測点 No.3、設計 200、実測 165。" class="img-tone"></div>
+        <figcaption><span>写真を送ると、AI が黒板の数字を読んで、規格と照らし合わせる。</span><span class="mono">01</span></figcaption>
+      </figure>
+    </div>
+    <div class="hero-bar hero-r">
+      <div class="wrap hb-in">
+        <p class="hb-lbl">自動にできる作業</p>
+        <div class="hb-mq" aria-label="自動にできる作業の例：見積書、工事写真の整理、安全書類、メールの仕分け、月末の集計、施工要領書、施工記録、写真帳、Excel の台帳の整理">
+          <div class="mq-track" aria-hidden="true">
+            <span>見積書</span><span>工事写真の整理</span><span>安全書類</span><span>メールの仕分け</span><span>月末の集計</span><span>施工要領書</span><span>施工記録</span><span>写真帳</span><span>Excel の台帳の整理</span>
+            <span>見積書</span><span>工事写真の整理</span><span>安全書類</span><span>メールの仕分け</span><span>月末の集計</span><span>施工要領書</span><span>施工記録</span><span>写真帳</span><span>Excel の台帳の整理</span>
+          </div>
+        </div>
+        <div class="hb-rotw"><p class="hb-rh">実績</p><ul class="hb-rot" aria-label="実績">
+          <li>工事写真の判定（AI 現場監督）</li><li>業務アプリ（不動産管理）</li><li>書類作成の実演（セミナー）</li><li>研修 約 30 社</li>
+        </ul></div>
+        <span class="hb-scroll" aria-hidden="true"><span>SCROLL</span><i></i></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 何をしているか -->
+  <section id="about" class="sec">
+    <div class="wrap sec-grid">
+      <p class="sec-lbl lbl" data-reveal="fade"><span class="mono">01</span><span class="jp">何をしているか</span></p>
+      <div class="sec-body">
+        <p class="t-statement" data-words>見積書、工事写真、安全書類、元請からのメール、月末の集計。工事会社の事務所でくり返されているパソコン作業を、AI とつないで自動にします。人がするのは、確かめることと、決めることです。</p>
+        <div class="about-sub">
+          <p class="t-body" data-reveal>2014 年に施工管理から始め、マンション管理、不動産の売買仲介、人材紹介と、建設・不動産の仕事を続けてきました。2023 年からは個人事業として、業務の自動化と、業務アプリの構築、研修を行っています。</p>
+          <a class="btn btn--s" href="#career" data-reveal><span class="btn-l"><span class="roll"><span>経歴を見る</span><span aria-hidden="true">経歴を見る</span></span></span><span class="btn-i"><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <dl class="stats" data-reveal-group="0.08">
+        <div><dt class="t-h1"><small class="pre">約</small><span data-count="30">30</span><small>社</small></dt><dd>ハンズオン形式の研修（2023 年から）</dd></div>
+        <div><dt class="t-h1"><span data-count="10">10</span><small>分</small></dt><dd>安全書類を作る実演（これまでは半日〜2 日）</dd></div>
+        <div><dt class="t-h1"><span data-count="88">88</span><small>秒</small></dt><dd>工事写真を送ってから、AI が返信するまで（実演）</dd></div>
+        <div><dt class="t-h1"><span data-count="3">3</span><small>つ</small></dt><dd>運用を続けている業務アプリ（不動産管理、2026.07 から）</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 02 自動にできる作業 -->
+  <section id="can" class="sec">
+    <div class="wrap sec-grid">
+      <p class="sec-lbl lbl" data-reveal="fade"><span class="mono">02</span><span class="jp">自動にできる作業</span></p>
+      <div class="sec-body sec-head">
+        <h2 class="t-h2" data-lines><span class="ln"><span>毎日くり返す作業から、</span></span><span class="ln"><span>順に自動にします。</span></span></h2>
+        <p class="t-body sec-aside" data-reveal data-delay=".15">決まった手順で進む作業は、AI に任せやすい作業です。判断が要るところは人に残し、AI は下書きと、確かめるための準備までを行います。</p>
+      </div>
+    </div>
+    <div class="wrap">
+      <ul class="caps" data-reveal-group="0.07">
+        <li class="cap">
+          <div class="cap-top"><span class="cap-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="1"/><path d="M3.5 9h17M3.5 14.5h17M9.5 9v11M15 9v11"/></svg></span><span class="mono cap-n">01</span></div>
+          <h3 class="t-h3">見積書</h3>
+          <p>拾い出し表と単価表から、見積書の数字を入れる。人は確かめて出すだけ。</p>
+        </li>
+        <li class="cap">
+          <div class="cap-top"><span class="cap-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3.2l1.6-2.5h6.4L16.8 8H20v11H4z"/><circle cx="12" cy="13.2" r="3.3"/></svg></span><span class="mono cap-n">02</span></div>
+          <h3 class="t-h3">工事写真</h3>
+          <p>写真の黒板を読み、名前を付けて工種ごとに仕分ける。写真帳も作る。</p>
+        </li>
+        <li class="cap">
+          <div class="cap-top"><span class="cap-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h8.5L18 7v13.5H6z"/><path d="M14 3.5V7.5h4M9 12.5l2 2 4-4.5"/></svg></span><span class="mono cap-n">03</span></div>
+          <h3 class="t-h3">安全書類</h3>
+          <p>作業員名簿や資格の情報から書類を作り、危険の洗い出しを下書きする。</p>
+        </li>
+        <li class="cap">
+          <div class="cap-top"><span class="cap-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="1"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></span><span class="mono cap-n">04</span></div>
+          <h3 class="t-h3">メール</h3>
+          <p>届いたメールを急ぎの順に分け、返信の下書きを作る。送るのは人。</p>
+        </li>
+        <li class="cap">
+          <div class="cap-top"><span class="cap-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="1"/><path d="M3.5 9.5h17M8 3v4M16 3v4M9 13.5h6M9 16.5h6"/></svg></span><span class="mono cap-n">05</span></div>
+          <h3 class="t-h3">月末の集計</h3>
+          <p>日報・請求書・出来高を照らし合わせて、月ごとに集計する。</p>
+        </li>
+        <li class="cap">
+          <div class="cap-top"><span class="cap-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.5" ry="2.5"/><path d="M4.5 6v12c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5V6M4.5 12c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5"/></svg></span><span class="mono cap-n">06</span></div>
+          <h3 class="t-h3">Excel の台帳</h3>
+          <p>担当者ごとに書き方が違う Excel を、kintone などの業務アプリにまとめる。</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 03 AI が働く様子（画面を止めて 3 段階で進む） -->
+  <section id="demo" class="sec demo">
+    <div class="demo-pin">
+      <div class="wrap demo-grid">
+        <div class="demo-l">
+          <p class="lbl" data-reveal="fade"><span class="mono">03</span><span class="jp">AI が働く様子</span></p>
+          <h2 class="t-h2" data-lines><span class="ln"><span>写真を送ると、AI が</span></span><span class="ln"><span>黒板を読んで返信する。</span></span></h2>
+          <ol class="demo-steps">
+            <li class="is-on"><i class="ds-bar"><b></b></i><span class="mono">01</span><div><h3>読む</h3><p>職長が現場から送った写真の、黒板の文字と数字を読む。</p></div></li>
+            <li><i class="ds-bar"><b></b></i><span class="mono">02</span><div><h3>照らし合わせる</h3><p>設計の規格と比べて、範囲に収まっているかを確かめる。</p></div></li>
+            <li><i class="ds-bar"><b></b></i><span class="mono">03</span><div><h3>返信して、残す</h3><p>結果を職長に返信し、写真に名前を付けてフォルダに保存する。台帳にも記録する。</p></div></li>
+          </ol>
+        </div>
+        <div class="demo-r">
+          <div class="win" data-stage="0">
+            <div class="win-bar"><i></i><i></i><i></i><span class="mono">aigentcraft / AI 現場監督</span><span class="win-live mono"><b></b>動作中</span></div>
+            <div class="win-body">
+              <div class="win-photo">
+                <img src="assets/board_ng.webp" alt="" loading="lazy">
+                <i class="ocr" style="--x:17.5%;--y:32.2%;--w:27.3%;--h:7.5%"></i>
+                <i class="ocr" style="--x:7.5%;--y:40.6%;--w:35.4%;--h:8.9%"></i>
+                <i class="ocr" style="--x:20.8%;--y:50.7%;--w:12.5%;--h:6.7%"></i>
+                <i class="ocr" style="--x:21.3%;--y:58.2%;--w:12.5%;--h:7.5%"></i>
+                <i class="ocr ocr-ng" style="--x:20.8%;--y:66.8%;--w:12.9%;--h:9.4%"></i>
+                <i class="ocr" style="--x:6.7%;--y:77.5%;--w:17.3%;--h:8.3%"></i>
+              </div>
+              <dl class="rd mono">
+                <div><dt>設計</dt><dd>200</dd></div><div><dt>実測</dt><dd>165</dd></div><div class="rd-ng"><dt>差</dt><dd>−35</dd></div><div><dt>規格値</dt><dd>−30 まで</dd></div>
+              </dl>
+              <ol class="log mono" aria-label="AI の処理の記録">
+                <li data-s="0"><time>14:02:11</time><b>受信</b><span>職長の大野さんから写真 1 枚　IMG_4053.jpg</span></li>
+                <li data-s="0"><time>14:02:19</time><b>読取</b><span>工種 基礎工／種別 基礎砕石 厚さ／測点 No.3</span></li>
+                <li data-s="0"><time>14:02:24</time><b>読取</b><span>設計 200／実測 165／日付 R8.12.5</span></li>
+                <li data-s="1"><time>14:02:31</time><b>照合</b><span>差 −35mm（規格値は −30mm まで）</span></li>
+                <li data-s="1" class="warn"><time>14:02:31</time><b>判定</b><span>規格外。均しコンクリートの前に撮り直しが必要</span></li>
+                <li data-s="1"><time>14:02:52</time><b>下書</b><span>撮り直しの依頼の文面を作成</span></li>
+                <li data-s="2" class="ok"><time>14:03:39</time><b>返信</b><span>大野さんへ送信（写真が届いてから 88 秒）</span></li>
+                <li data-s="2" class="ok"><time>14:03:40</time><b>保存</b><span>R8.12.5_No.3_実測165_規格外_大野.jpg</span></li>
+                <li data-s="2" class="ok"><time>14:03:41</time><b>記録</b><span>要対応リストに 1 件追加</span></li>
+              </ol>
+            </div>
+            <div class="win-flow mono" aria-hidden="true">
+              <span class="fn" data-n="0">Slack</span><i class="fl"></i><span class="fn" data-n="0">黒板の読取</span><i class="fl"></i><span class="fn" data-n="1">規格の照合</span><i class="fl"></i><span class="fn" data-n="2">返信</span><i class="fl"></i><span class="fn" data-n="2">台帳</span>
+            </div>
+          </div>
+          <p class="note">デモ環境（架空の建設会社）での実演です。会社・人物・写真は架空で、AI は実際に動いています。計測：2026.10.08 の録画より。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 進め方 -->
+  <section id="flow" class="sec flow">
+    <div class="mq-big" aria-hidden="true"><div class="mq-track"><span>進め方</span><i></i><span>進め方</span><i></i><span>進め方</span><i></i><span>進め方</span><i></i><span>進め方</span><i></i><span>進め方</span><i></i></div></div>
+    <div class="wrap sec-grid">
+      <p class="sec-lbl lbl" data-reveal="fade"><span class="mono">04</span><span class="jp">進め方</span></p>
+      <div class="sec-body">
+        <h2 class="t-statement flow-st" data-words>使っている Excel や書類を見せていただくところから始めます。仕組みを作ったあとも、毎月の要望を反映しながら、一緒に使い続けます。</h2>
+      </div>
+    </div>
+    <div class="wrap flow-grid">
+      <ol class="acc">
+        <li class="acc-i is-open">
+          <button class="acc-h" type="button" aria-expanded="true"><span class="mono">01</span><span class="acc-t">ヒアリング</span><i class="acc-pm" aria-hidden="true"></i></button>
+          <div class="acc-b"><div><p>実際の業務と、使っているファイル・データを伺います。どの作業にどれだけ時間がかかっているかを、一緒に書き出します。</p></div></div>
+        </li>
+        <li class="acc-i">
+          <button class="acc-h" type="button" aria-expanded="false"><span class="mono">02</span><span class="acc-t">要件定義・仕様書</span><i class="acc-pm" aria-hidden="true"></i></button>
+          <div class="acc-b"><div><p>どこまでを自動にして、どこを人に残すかを仕様書にまとめます。打ち合わせの議事録も残します。</p></div></div>
+        </li>
+        <li class="acc-i">
+          <button class="acc-h" type="button" aria-expanded="false"><span class="mono">03</span><span class="acc-t">実装・テスト</span><i class="acc-pm" aria-hidden="true"></i></button>
+          <div class="acc-b"><div><p>実装して動作を確かめ、これまでのデータを移します。使い方の説明は、画面の中に組み込みます。</p></div></div>
+        </li>
+        <li class="acc-i">
+          <button class="acc-h" type="button" aria-expanded="false"><span class="mono">04</span><span class="acc-t">運用</span><i class="acc-pm" aria-hidden="true"></i></button>
+          <div class="acc-b"><div><p>仕様書と変更履歴を残し、毎月の要望を反映します。研修をお受けする場合は、部署ごとの手順書もお渡しします。</p></div></div>
+        </li>
+      </ol>
+      <div class="flow-ph" aria-hidden="true"><div class="win-bar"><i></i><i></i><i></i><span class="mono fp-t">是正一覧（ハンズオン研修の見本）</span></div><div class="fp-in">
+        <figure class="is-on" data-t="是正一覧（ハンズオン研修の見本）"><img src="assets/handson_pc.webp" alt="" loading="lazy"></figure>
+        <figure data-t="撮り忘れ・規格外・写真不備の一覧"><img src="assets/photobook.webp" alt="" loading="lazy"></figure>
+        <figure data-t="n8n のワークフロー"><img src="assets/n8n_2.webp" alt="" loading="lazy"></figure>
+        <figure data-t="講義資料"><img src="assets/lecture.webp" alt="" loading="lazy"></figure>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 05 実演の数字 -->
+  <section id="numbers" class="sec">
+    <div class="wrap sec-grid">
+      <p class="sec-lbl lbl" data-reveal="fade"><span class="mono">05</span><span class="jp">実演の数字</span></p>
+      <div class="sec-body num-grid">
+        <div class="num-l">
+          <h2 class="t-h2" data-lines><span class="ln"><span>書類を作るのに</span></span><span class="ln"><span>かかる時間。</span></span></h2>
+          <p class="t-body" data-reveal>建設会社の経営層向けセミナー（2026.10.01、Zoom）で担当した 4 本の実演です。架空の道路改良工事を題材にしています。「これまで」の時間は、セミナー資料に載せた数字です。</p>
+          <p class="num-risk" data-reveal><span class="t-h1 mono-num">28</span><span>安全書類の実演で洗い出した危険の数。うち 18 件がレベルⅣでした。</span></p>
+        </div>
+        <ul class="nums" data-reveal-group="0.08">
+          <li><p class="n-k">見積書</p><p class="n-v"><span class="n-b"><small>これまで</small><s>90 分</s></span><span class="n-a"><small>実演</small><b>10 分</b></span></p></li>
+          <li><p class="n-k">施工要領書</p><p class="n-v"><span class="n-b"><small>これまで</small><s>3〜4 日</s></span><span class="n-a"><small>実演</small><b>30 分</b></span></p></li>
+          <li><p class="n-k">安全書類</p><p class="n-v"><span class="n-b"><small>これまで</small><s>半日〜2 日</s></span><span class="n-a"><small>実演</small><b>10 分</b></span></p></li>
+          <li><p class="n-k">施工記録</p><p class="n-v"><span class="n-b"><small>これまで</small><s>月末に 1 時間</s></span><span class="n-a"><small>実演</small><b>その場で</b></span></p></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 実績 -->
+  <section id="works" class="sec works">
+    <div class="wrap sec-grid">
+      <p class="sec-lbl lbl" data-reveal="fade"><span class="mono">06</span><span class="jp">実績</span></p>
+      <div class="sec-body sec-head">
+        <h2 class="t-h2" data-lines><span class="ln"><span>これまでの仕事</span></span></h2>
+        <p class="t-body sec-aside" data-reveal data-delay=".15">業務の自動化、業務アプリ、セミナー、研修。会社名・顧客名は出していません。行を押すと、詳しい説明が開きます。</p>
+      </div>
+    </div>
+    <div class="wrap">
+      <ol class="wl">
+        <li class="wl-i is-open" data-img="assets/genba.webp">
+          <button class="wl-h" type="button" aria-expanded="true"><span class="mono wl-n">01</span><span class="wl-t">AI 現場監督</span><span class="wl-d">工事写真の判定と、台帳・写真帳への反映</span><span class="mono wl-y">2026</span><i class="wl-pm" aria-hidden="true"></i></button>
+          <div class="wl-b"><div><div class="wl-in">
+            <div class="wl-text">
+              <p>従来の現場では、職長が LINE で送った写真を、監督が月末にまとめて確認していました。規格外が分かるのは、埋め戻しの後になります。この仕組みでは、職長が Slack に写真を送ると、AI が黒板の数値を読み、設計の規格と照らし合わせて返信します。</p>
+              <p>6 つの役割（現場監督・積算・施工管理・安全書類・図面・事務）を AI に分け、相手によって部屋を使い分けます。決まりごとは「作らない・消さない・外に出さない・確定は人」。</p>
+              <p class="note">計測：2026.10.08 デモ環境（架空の工事・会社）の録画 15 分 20 秒より。</p>
+            </div>
+            <dl class="wl-kv">
+              <div><dt>写真を送ってから判定まで</dt><dd>71 秒・88 秒<small>床付け・基礎砕石</small></dd></div>
+              <div><dt>工事写真帳の作成</dt><dd>約 2 分 40 秒<small>依頼から</small></dd></div>
+              <div><dt>金額の問い合わせへの返答</dt><dd>21 秒<small>本社の部屋へ回す</small></dd></div>
+            </dl>
+          </div></div></div>
+        </li>
+        <li class="wl-i" data-img="assets/lecture.webp">
+          <button class="wl-h" type="button" aria-expanded="false"><span class="mono wl-n">02</span><span class="wl-t">建設業 役員向けセミナー</span><span class="wl-d">書類の作成にかかる時間（実演 4 本）</span><span class="mono wl-y">2026.10</span><i class="wl-pm" aria-hidden="true"></i></button>
+          <div class="wl-b"><div><div class="wl-in">
+            <div class="wl-text">
+              <p>AI 研修会社の主催で、建設会社の経営層向けに Zoom で行ったセミナー（資料 69 枚）です。架空の道路改良工事を題材に、見積書・施工要領書・安全書類・施工記録の 4 本の実演を担当しました。</p>
+            </div>
+            <dl class="wl-kv">
+              <div><dt>見積書</dt><dd>90 分 → 10 分</dd></div>
+              <div><dt>安全書類</dt><dd>半日〜2 日 → 10 分</dd></div>
+              <div><dt>危険の洗い出し</dt><dd>28 件<small>うち 18 件がレベルⅣ</small></dd></div>
+            </dl>
+          </div></div></div>
+        </li>
+        <li class="wl-i" data-img="assets/handson_pc.webp">
+          <button class="wl-h" type="button" aria-expanded="false"><span class="mono wl-n">03</span><span class="wl-t">kintone 業務アプリ</span><span class="wl-d">Excel と Microsoft Lists から、3 つの業務アプリへ</span><span class="mono wl-y">2026.07–</span><i class="wl-pm" aria-hidden="true"></i></button>
+          <div class="wl-b"><div><div class="wl-in">
+            <div class="wl-text">
+              <p>不動産管理会社（社名は非公開）からの業務委託です。担当者ごとに書き方が違う Excel と Microsoft Lists で、同じ情報を二重に管理していました。</p>
+              <p>未清掃一覧と入居予定点検表を双方向に連動させ、店舗の日報と目標から月ごとに集計する営業成績ダッシュボードを作りました。アプリの画面に使い方の説明を組み込み、仕様書と変更履歴を残しながら、毎月の要望を反映して運用を続けています。</p>
+            </div>
+            <dl class="wl-kv">
+              <div><dt>業務アプリ</dt><dd>3 つ<small>未清掃一覧・入居予定点検表・営業成績ダッシュボード</small></dd></div>
+              <div><dt>担当</dt><dd>要件定義から運用まで</dd></div>
+            </dl>
+          </div></div></div>
+        </li>
+        <li class="wl-i" data-img="assets/pullie.webp">
+          <button class="wl-h" type="button" aria-expanded="false"><span class="mono wl-n">04</span><span class="wl-t">メディア運営の自動化</span><span class="wl-d">AI の役割分担による、2 つのメディアの運営</span><span class="mono wl-y">2026</span><i class="wl-pm" aria-hidden="true"></i></button>
+          <div class="wl-b"><div><div class="wl-in">
+            <div class="wl-text">
+              <p>自社で運営している 2 つのメディアです。企画・執筆・公開・分析を、役割を分けた AI が担当しています。</p>
+            </div>
+            <dl class="wl-kv">
+              <div><dt>pullie.jp</dt><dd>24 役の AI<small>kintone の導入支援の受注を目的としたメディア</small></dd></div>
+              <div><dt>weevee.net</dt><dd>16 役の AI<small>AI 分野の記事と速報</small></dd></div>
+            </dl>
+          </div></div></div>
+        </li>
+        <li class="wl-i" data-img="assets/n8n_2.webp">
+          <button class="wl-h" type="button" aria-expanded="false"><span class="mono wl-n">05</span><span class="wl-t">調査・文書作成の自動化</span><span class="wl-d">n8n で組んだ 4 つの仕組み（調査・文書・映像の分析）</span><span class="mono wl-y">2024.10–</span><i class="wl-pm" aria-hidden="true"></i></button>
+          <div class="wl-b"><div><div class="wl-in">
+            <div class="wl-text">
+              <p>企画、要件定義、ワークフローの設計、実装までを一人で担当しました。同じ失敗をくり返さないための「失敗の知識」313 件を、自分専用の AI 基盤に記録しています。</p>
+            </div>
+            <dl class="wl-kv">
+              <div><dt>商談映像の分析（要点の把握）</dt><dd>1 時間超 → 約 5 分</dd></div>
+              <div><dt>専門文書の下書き</dt><dd>数時間 → 数分<small>−95%</small></dd></div>
+              <div><dt>調査から戦略の案まで</dt><dd>3 日 → 約 10 分</dd></div>
+              <div><dt>SEO 記事の執筆</dt><dd>収集・資料化・執筆を一度に<small>2025.02 から継続運用</small></dd></div>
+            </dl>
+          </div></div></div>
+        </li>
+        <li class="wl-i" data-img="assets/lecture.webp">
+          <button class="wl-h" type="button" aria-expanded="false"><span class="mono wl-n">06</span><span class="wl-t">ハンズオン研修と講義資料</span><span class="wl-d">約 30 社の研修と、Claude Code の講義資料</span><span class="mono wl-y">2023–</span><i class="wl-pm" aria-hidden="true"></i></button>
+          <div class="wl-b"><div><div class="wl-in">
+            <div class="wl-text">
+              <p>約 30 社で、各部署の代表者に実際の業務を伺いながら、画面を共有して一緒に作る形式の研修を行ってきました（オンライン、1 回あたり 1〜2 時間）。「はじめての Claude Code」の講義資料と、受講者が手元で作るハンズオンの見本も作っています。</p>
+            </div>
+            <dl class="wl-kv">
+              <div><dt>講義資料</dt><dd>46 枚<small>スライドと台本、受講者用の手元資料</small></dd></div>
+              <div><dt>ハンズオンの実測</dt><dd>3 分 36 秒 → 68 秒<small>1 回目と 2 回目（リハーサル）</small></dd></div>
+            </dl>
+          </div></div></div>
+        </li>
+      </ol>
+    </div>
+    <div class="wl-cur" aria-hidden="true"><div class="wl-cur-in"></div></div>
+  </section>
+
+  <!-- 07 経歴 -->
+  <section id="career" class="sec">
+    <div class="wrap sec-grid">
+      <p class="sec-lbl lbl" data-reveal="fade"><span class="mono">07</span><span class="jp">経歴</span></p>
+      <div class="sec-body sec-head">
+        <h2 class="t-h2" data-lines><span class="ln"><span>建設・不動産の実務と、</span></span><span class="ln"><span>AI による自動化。</span></span></h2>
+      </div>
+    </div>
+    <div class="wrap">
+      <ol class="cr" data-reveal-group="0.06">
+        <li><span class="mono cr-y">2014.04–2016.03</span><div class="cr-m"><h3>施工管理<small>大手ゼネコン</small></h3><p>総合病院の新築工事、精神科病院の増築工事。躯体・内装・設備の工程・安全・品質の管理。</p></div></li>
+        <li><span class="mono cr-y">2016.04–2021.03</span><div class="cr-m"><h3>マンション管理<small>係長（部下 5 名）</small></h3><p>6 棟 8 組合を担当、新規物件の立ち上げ 2 棟。管理規約の作成、収支計画、理事会・総会の運営。</p></div></li>
+        <li><span class="mono cr-y">2021.04–2023.07</span><div class="cr-m"><h3>不動産の売買仲介<small>係長（部下 3 名）</small></h3><p>居住用・投資用の売買仲介（中古マンション、戸建、収益物件、土地）。個人と法人の両方を担当。</p></div></li>
+        <li><span class="mono cr-y">2023.08–</span><div class="cr-m"><h3>人材紹介<small>建設・不動産領域のハイクラス担当</small></h3><p>PM・施工管理・設計職などの転職支援。経験の棚卸し、求人の提案、企業への推薦と条件の交渉。</p></div></li>
+        <li class="cr-now"><span class="mono cr-y">2023–</span><div class="cr-m"><h3>AI Ops Manager<small>個人事業</small></h3><p>AI による業務の自動化、業務アプリの構築と運用、ハンズオン形式の研修。</p></div></li>
+      </ol>
+      <dl class="cr-kv" data-reveal-group="0.06">
+        <div><dt>資格</dt><dd>宅地建物取引士（2022 年）、管理業務主任者（2018 年）</dd></div>
+        <div><dt>担当の範囲</dt><dd>ヒアリング、要件定義、設計、実装、運用、研修</dd></div>
+        <div><dt>開発の道具</dt><dd>Claude Code、n8n、Supabase、Dify、Docker、LLM API（Claude／Gemini／GPT）</dd></div>
+        <div><dt>業務アプリ</dt><dd>kintone、Google Workspace、Microsoft 365、Slack、Notion</dd></div>
+      </dl>
+      <div class="cr-act" data-reveal>
+        <div class="cr-act-h"><p><span class="mono">1,512</span> 件の GitHub のコミット</p><p class="mono">2025.10.13–2026.10.08</p></div>
+        <canvas class="cr-cv" aria-label="この 1 年のコミットの数を 1 日ずつ表した棒グラフ。最も多かった日は 2026 年 3 月 1 日の 84 件。2026 年 8〜9 月で 1,014 件。"></canvas>
+        <div class="cr-act-f mono"><span>2025.10</span><span>2026.01</span><span>2026.04</span><span>2026.07</span><span>2026.10</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ご相談 -->
+  <section id="contact" class="cta">
+    <div class="cta-bg" aria-hidden="true"><img src="assets/cta.jpg" alt="" data-parallax="8" class="img-tone"></div>
+    <div class="cta-shade" aria-hidden="true"></div>
+    <div class="wrap cta-in">
+      <p class="lbl" data-reveal="fade"><span class="dot"></span><span class="jp">ご相談</span></p>
+      <h2 class="t-display cta-h" data-lines><span class="ln"><span>まずは、毎日の作業を</span></span><span class="ln"><span class="min">1 つ教えてください。</span></span></h2>
+      <div class="cta-row">
+        <p class="t-lead" data-reveal>業務の自動化、AI 活用研修、建設・不動産の業務アプリのご相談を受け付けています。平日の夜（19 時以降）の打ち合わせにも対応します。</p>
+        <div class="cta-mail" data-reveal data-delay=".1">
+          <p class="mail mono" id="mail">aigentcraft@gmail.com</p>
+          <div class="cta-btns">
+            <button class="btn btn--p" type="button" id="copy"><span class="btn-l"><span class="roll"><span class="cp-t">アドレスをコピー</span><span aria-hidden="true" class="cp-t">アドレスをコピー</span></span></span><span class="btn-i"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/></svg></span></button>
+            <a class="btn btn--s" href="mailto:aigentcraft@gmail.com"><span class="btn-l"><span class="roll"><span>メールを書く</span><span aria-hidden="true">メールを書く</span></span></span><span class="btn-i"><svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+          </div>
+          <p class="cp-msg" role="status"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="ft">
+  <div class="mq-ft" aria-hidden="true"><div class="mq-track"><span>相談する</span><i></i><span>相談する</span><i></i><span>相談する</span><i></i><span>相談する</span><i></i><span>相談する</span><i></i><span>相談する</span><i></i></div></div>
+  <div class="wrap ft-cols">
+    <div><p class="ft-h mono">PAGE</p><ul><li><a href="#can">自動にできる作業</a></li><li><a href="#demo">AI が働く様子</a></li><li><a href="#flow">進め方</a></li><li><a href="#works">実績</a></li><li><a href="#career">経歴</a></li></ul></div>
+    <div><p class="ft-h mono">CONTACT</p><ul><li class="mono">aigentcraft@gmail.com</li><li><a href="https://github.com/aigentcraft" target="_blank" rel="noopener">GitHub</a></li></ul></div>
+    <div class="ft-about"><p class="ft-h mono">ABOUT</p><p>このサイトは、内容を土屋が決め、Claude が組み立てました。入口の映像は Gemini で作ったイメージです。経歴のコミットの記録は、GitHub の全コミット 1,512 件（日本時間で集計）から描いています。</p><button class="ft-replay" type="button">入口の映像をもう一度見る</button></div>
+  </div>
+  <div class="wrap ft-giant" aria-hidden="true"><svg class="logo-mark" viewBox="0 0 34 20"><rect x="1" y="1" width="32" height="18" rx="9"/><circle cx="24" cy="10" r="5.5"/></svg><span>aigentcraft</span></div>
+  <div class="wrap ft-bottom mono"><span>© 2026 Kenta Tsuchiya</span><a href="#top">ページの先頭へ</a></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.21/dist/lenis.min.js"></script>
+<script>window.__DATA__={"first":"2025-10-13","last":"2026-10-08","n":361,"total":1512,"activeDays":151,"repos":18,"cats":[["メディア運営",632,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,12,10,2,7,8,9,0,5,11,7,14,38,12,11,21,15,6,6,6,3,10,6,1,9,5,18,49,22,25,6,1,25,3,7,3,10,6,9,11,17,11,9,7,12,0,0,0,9,8,4,11,3,21,3,16,6,12,3,7,0,4,0,7,10,3,1,2,14]],["自分専用の AI 基盤",443,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,8,12,3,2,12,7,84,22,7,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,0,4,0,4,3,12,3,7,5,3,2,3,3,2,1,4,1,2,1,15,20,8,14,4,1,10,1,3,2,5,5,7,7,5,4,3,6,4,0,8,9,2,10,3,9,0,23,1,3,4,2,0,2,0,4,0,5,3,3,0,0,3]],["業務の自動化",248,[7,31,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,5,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0,0,1,0,1,1,0,0,0,1,0,0,1,1,0,0,1,1,1,0,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,6,22,22,5,12,10,12,0,28,1,0,1,1,0,1,2,5,3,8,2,3,0,0,0]],["kintone 業務アプリ",45,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1,0,0,2,2,0,0,2,0,0,4,4,0,1,0,1,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1,0,0,0,0,0,0,4,1,0,0,0,0,0,0,0,2,0,3,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0]],["建設・セミナー",14,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,0]],["そのほか",130,[0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,2,19,9,6,2,1,21,5,12,8,19,4,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]],"peak":["2026-03-01",84],"augSep":1014,"maxCat":84};window.__CLIPS={"A1":{"jpg":1,"mp4":1},"A1_fin":{"jpg":1},"A2":{"jpg":1,"mp4":1},"A2_fin":{"jpg":1},"A3":{"jpg":1,"mp4":1},"A3_fin":{"jpg":1},"A4":{"jpg":1,"mp4":1},"A4_fin":{"jpg":1},"A5":{"jpg":1,"mp4":1},"A5_fin":{"jpg":1},"B1":{"jpg":1,"mp4":1},"B2":{"jpg":1,"mp4":1},"B3":{"jpg":1,"mp4":1},"B4":{"jpg":1,"mp4":1},"B5":{"jpg":1,"mp4":1}};window.__MEDIA="video";window.__OPENER={"dur":10,"l":{"mp4":"assets/opener/opener_l.mp4","webm":"assets/opener/opener_l.webm"},"p":{"mp4":"assets/opener/opener_p.mp4","webm":"assets/opener/opener_p.webm"}};</script>
+<script>
+/* v3 — 入口（動画とトグル）と、Cortex の作りの本編 */
+(function () {
+  'use strict';
+  var D = document, H = D.documentElement;
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var CLIPS = window.__CLIPS || {};
+  var MEDIA = window.__MEDIA || 'auto';
+  var gate = D.getElementById('gate');
+
+  if (!window.gsap || !window.ScrollTrigger) {
+    if (gate) gate.classList.add('is-gone');
+    H.classList.add('app');
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.defaults({ ease: 'power3.out' });
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  function $(s, r) { return (r || D).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || D).querySelectorAll(s)); }
+  function el(tag, cls, html) { var e = D.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function fmt(n, dec) { return Number(n).toLocaleString('ja-JP', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 }); }
+
+  /* なめらかなスクロール（Cortex と同じ設定） */
+  var lenis = null;
+  if (!RM && window.Lenis) {
+    lenis = new Lenis({ duration: 1.15, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    window.__lenis = lenis;
+  }
+  function lockScroll(on) {
+    H.classList.toggle('gate-open', on);
+    if (lenis) { if (on) lenis.stop(); else lenis.start(); }
+  }
+
+  /* ───────────────── 入口 ─────────────────
+     入口は 1 ページ：画面いっぱいに手作業の場面の動画が次々に流れ、その上に場面の説明と大きなトグル
+     トグルを押すと：琥珀色がトグルの形から画面いっぱいに広がり、自動にしたあとの流れの動画（HyperFrames で作った 10 秒）が流れて、本編へ */
+  var SCENES = [
+    { b: 'B1', task: '見積書', tb: '19:42', pos: '58% 42%', mpos: '36% 50%',
+      before: '紙の拾い出し表を見ながら、|Excel に数字を 1 つずつ打ち込む。' },
+    { b: 'B2', task: '工事写真', tb: '18:56', pos: '50% 40%', mpos: '28% 50%',
+      before: 'スマホの写真をパソコンに移して、|1 枚ずつ名前を付け直す。' },
+    { b: 'B3', task: '安全書類', tb: '21:08', pos: '50% 40%', mpos: '58% 50%',
+      before: '作業員名簿を見ながら、|同じ名前と資格を書類に写す。' },
+    { b: 'B4', task: 'メール', tb: '13:24', pos: '60% 40%', mpos: '56% 50%',
+      before: '書類を作っている途中に、|元請から「至急」のメールが次々に届く。' },
+    { b: 'B5', task: '月末の集計', tb: '22:35', pos: '50% 40%', mpos: '50% 50%',
+      before: '月末の夜、日報と請求書を|電卓で 1 枚ずつ照らし合わせる。' }
+  ].filter(function (s) { return CLIPS[s.b]; });
+
+  var DUR = 4.6;                            /* 入口の 1 場面の長さ */
+  var OPV = window.__OPENER || null;        /* トグルのあとの動画：{ l: 横長, p: 縦長, dur: 秒 } */
+  var G = {
+    open: false, stage: 'entry', idx: 0, timer: null, motion: null, ext: null, stageAt: 0,
+    layers: { before: [] }, opTl: null, opv: null, opKey: null, opPlaying: false
+  };
+  var gMedia, gBefore, gPage, gOp, gLine, gTime, gTask, gSteps, tog, togFill, togKnob, gOpVideo, gFlood;
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function clipUrl(id, ext) { return 'assets/clips/' + id + '.' + ext; }
+  var blobCache = {};
+  var FILE_PAGE = location.protocol === 'file:';
+  function getBlob(url) {
+    if (FILE_PAGE) return Promise.reject(new Error('file'));
+    if (!blobCache[url]) blobCache[url] = fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.blob(); });
+    return blobCache[url];
+  }
+
+  /* 動画の出し方を決める：Web サイトは MP4、共有ページはアニメーション画像（AVIF が使えれば AVIF、だめなら WebP） */
+  var AVIF_TEST = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAAD5bWV0YQAAAAAAAAAvaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAFBpY3R1cmVIYW5kbGVyAAAAAA5waXRtAAAAAAABAAAAHmlsb2MAAAAARAAAAQABAAAAAQAAASEAAAAXAAAAKGlpbmYAAAAAAAEAAAAaaW5mZQIAAAAAAQAAYXYwMUNvbG9yAAAAAGppcHJwAAAAS2lwY28AAAAUaXNwZQAAAAAAAAAQAAAAEAAAABBwaXhpAAAAAAMICAgAAAAMYXYxQ4EADAAAAAATY29scm5jbHgAAgACAAIAAAAAF2lwbWEAAAAAAAAAAQABBAECgwQAAAAfbWRhdAoGGAz/2wCAMg0YAAAAUAAAAACpjljU';
+  function pickImg() {
+    return new Promise(function (res) {
+      var im = new Image(), done = false;
+      function end(ok) { if (done) return; done = true; G.ext = ok ? 'avif' : 'webp'; res('img'); }
+      im.onload = function () { end(im.naturalWidth > 0); };
+      im.onerror = function () { end(false); };
+      setTimeout(function () { end(false); }, 1500);
+      im.src = AVIF_TEST;
+    });
+  }
+  function detectMotion() {
+    if (RM) return Promise.resolve('still');
+    if (MEDIA === 'video') return Promise.resolve('video');
+    if (MEDIA === 'img') return pickImg();
+    var first = SCENES[0] && CLIPS[SCENES[0].b];
+    if (!first || !first.mp4) return pickImg();
+    return getBlob(clipUrl(SCENES[0].b, 'mp4')).then(function (b) {
+      return new Promise(function (res) {
+        var v = D.createElement('video'), url = URL.createObjectURL(b), done = false;
+        v.muted = true; v.playsInline = true; v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+        v.style.cssText = 'position:absolute;width:2px;height:2px;opacity:0;pointer-events:none';
+        gMedia.appendChild(v);
+        function end(ok) { if (done) return; done = true; clearTimeout(t); try { v.pause(); } catch (e) {} v.remove(); URL.revokeObjectURL(url); res(ok); }
+        var t = setTimeout(function () { end(false); }, 3500);
+        v.addEventListener('timeupdate', function () { if (v.currentTime > 0.05) end(true); });
+        v.addEventListener('error', function () { end(false); });
+        v.src = url;
+        var p = v.play(); if (p && p.catch) p.catch(function () { end(false); });
+      });
+    }).catch(function () { return false; }).then(function (ok) { return ok ? 'video' : pickImg(); });
+  }
+  function mediaExt(info) {
+    if (G.motion === 'video') return info.mp4 ? 'mp4' : null;
+    if (G.motion === 'img') return info[G.ext] ? G.ext : (info.webp ? 'webp' : null);
+    return null;
+  }
+
+  /* 1 本の映像（読み込むまでは最初の 1 コマを見せる） */
+  function buildClip(id) {
+    var info = CLIPS[id] || {};
+    var box = el('div', 'clip'), wrap = el('div', 'cw'), poster = new Image();
+    poster.alt = ''; poster.decoding = 'async'; poster.className = 'cv';
+    poster.src = clipUrl(id, 'jpg');
+    wrap.appendChild(poster); box.appendChild(wrap);
+    return { id: id, info: info, box: box, wrap: wrap, poster: poster, live: null, url: null };
+  }
+  function startMedia(c) {
+    var ext = mediaExt(c.info);
+    if (!ext) return;
+    if (ext === 'mp4') {
+      /* index.html をファイルのまま開いたとき（file://）は fetch が使えないので、ファイルの場所をそのまま渡す */
+      var direct = clipUrl(c.id, 'mp4');
+      var ready = c.live ? Promise.resolve(null) : getBlob(direct).then(function (b) { return URL.createObjectURL(b); }, function () { return direct; });
+      ready.then(function (src) {
+        var isBlob = src && src !== direct;
+        if (!c.box.classList.contains('is-on')) { if (isBlob && !c.live) URL.revokeObjectURL(src); return; }
+        if (!c.live) {
+          var v = D.createElement('video'); v.muted = true; v.playsInline = true; v.loop = true; v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+          v.className = 'cv'; v.style.opacity = 0;
+          c.url = isBlob ? src : null; v.src = src; c.wrap.appendChild(v); c.live = v;
+          placeClip(c); copyScale(c, v);
+          v.addEventListener('playing', function () { gsap.to(v, { opacity: 1, duration: .2 }); }, { once: true });
+        } else if (isBlob) URL.revokeObjectURL(src);
+        try { c.live.currentTime = 0; } catch (e) {}
+        var p = c.live.play(); if (p && p.catch) p.catch(function () {});
+      }).catch(function () {});
+    } else if (c.next) {
+      /* 先に読み込んで解いておいた画像を、そのまま出す */
+      var pre = c.next; c.next = null;
+      if (c.live) { var old0 = c.live, oldUrl0 = c.url; setTimeout(function () { old0.remove(); if (oldUrl0) URL.revokeObjectURL(oldUrl0); }, 300); }
+      pre.img.style.opacity = 1; c.wrap.appendChild(pre.img); c.live = pre.img; c.url = pre.url;
+      placeClip(c); copyScale(c, pre.img);
+    } else {
+      /* アニメーション画像は、毎回新しい URL で読み直すと 1 コマ目から始まる */
+      getBlob(clipUrl(c.id, ext)).then(function (b) {
+        if (!c.box.classList.contains('is-on')) return;
+        var img = new Image(), url = URL.createObjectURL(b);
+        img.alt = ''; img.className = 'cv'; img.style.opacity = 0;
+        img.onload = function () {
+          if (!c.box.classList.contains('is-on')) { img.remove(); URL.revokeObjectURL(url); return; }
+          if (c.live) { var old = c.live, oldUrl = c.url; setTimeout(function () { old.remove(); if (oldUrl) URL.revokeObjectURL(oldUrl); }, 300); }
+          c.live = img; c.url = url; img.style.opacity = 1;
+          placeClip(c); copyScale(c, img);
+        };
+        img.src = url; c.wrap.appendChild(img);
+      }).catch(function () {});
+    }
+  }
+  function primeImg(c) {
+    var ext = mediaExt(c.info);
+    if (!ext || ext === 'mp4' || c.next || c.priming) return;
+    c.priming = true;
+    getBlob(clipUrl(c.id, ext)).then(function (b) {
+      var img = new Image(), url = URL.createObjectURL(b);
+      img.alt = ''; img.className = 'cv'; img.decoding = 'async'; img.src = url;
+      var keep = function () { c.priming = false; if (c.next) URL.revokeObjectURL(c.next.url); c.next = { img: img, url: url }; };
+      (img.decode ? img.decode() : Promise.resolve()).then(keep, keep);
+    }).catch(function () { c.priming = false; });
+  }
+  function stopMedia(c) {
+    if (c.live && c.live.tagName === 'VIDEO') { try { c.live.pause(); } catch (e) {} }
+  }
+  function copyScale(c, node) {
+    var s = gsap.getProperty(c.poster, 'scale');
+    gsap.set(node, { scale: s });
+    var tw = c.kb; if (tw && tw.isActive()) gsap.to(node, { scale: tw.vars.scale, duration: Math.max(.1, tw.duration() - tw.time()), ease: tw.vars.ease || 'none' });
+  }
+  function kenBurns(c, dur, from, to, ease) {
+    var nodes = [c.poster]; if (c.live) nodes.push(c.live);
+    if (c.kb) c.kb.kill();
+    c.kb = gsap.fromTo(nodes, { scale: from || 1.08 }, { scale: to || 1, duration: dur, ease: ease || 'none' });
+  }
+  /* 縦長の画面では、人物が見える位置に寄せる */
+  function placeClip(c) {
+    var s = SCENES[Math.max(0, G.layers.before.indexOf(c))], port = innerHeight > innerWidth * 1.05;
+    var p = port ? s.mpos : s.pos;
+    [c.poster, c.live].forEach(function (n) { if (n) n.style.objectPosition = p; });
+  }
+  function hideClip(c) {
+    var L = G.layers.before;
+    if (L.cur != null && L[L.cur] === c) return;
+    c.box.classList.remove('is-on'); gsap.set(c.wrap, { xPercent: 0 }); stopMedia(c);
+  }
+
+  /* ── 入口：画面いっぱいの手作業の場面 ── */
+  function showBefore(i, how) {
+    var L = G.layers.before, prev = L.cur != null ? L[L.cur] : null, c = L[i];
+    if (!c || (prev === c && how !== 'force')) return;
+    L.cur = i;
+    placeClip(c);
+    c.box.classList.add('is-on'); c.box.style.zIndex = 2;
+    if (prev && prev !== c) prev.box.style.zIndex = 1;
+    kenBurns(c, DUR + 1.2);
+    startMedia(c);
+    var nx = L[(i + 1) % L.length]; if (nx && nx !== c) primeImg(nx);
+    if (how === 'flow' && !RM && prev && prev !== c) {
+      gsap.fromTo(c.box, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'expo.inOut' });
+      gsap.fromTo(c.wrap, { xPercent: 7 }, { xPercent: 0, duration: 1.5, ease: 'expo.out' });
+      gsap.to(prev.wrap, { xPercent: -6, duration: 1.05, ease: 'expo.inOut', onComplete: function () { hideClip(prev); } });
+    } else {
+      gsap.set(c.box, { clipPath: 'inset(0% 0% 0% 0%)' }); gsap.set(c.wrap, { xPercent: 0 });
+      if (prev && prev !== c) hideClip(prev);
+    }
+  }
+  function lineHtml(t) { return '<span class="gl">' + t.split('|').map(function (x) { return '<span class="ln"><span>' + x + '</span></span>'; }).join('') + '</span>'; }
+  function setLine(text, instant) {
+    var olds = $$('.gl', gLine);
+    olds.forEach(function (o) { gsap.killTweensOf($$('.ln > span', o)); });
+    if (instant || RM || !olds.length) {
+      gLine.innerHTML = lineHtml(text);
+      if (!RM && !instant) gsap.from($$('.ln > span', gLine), { yPercent: 110, duration: .95, ease: 'expo.out', stagger: .07 });
+      return;
+    }
+    olds.forEach(function (o) {
+      o.classList.add('is-out');
+      gsap.to($$('.ln > span', o), { yPercent: -110, duration: .5, ease: 'power3.in', stagger: .04, onComplete: function () { o.remove(); } });
+    });
+    gLine.insertAdjacentHTML('beforeend', lineHtml(text));
+    var fresh = gLine.lastElementChild;
+    gsap.fromTo($$('.ln > span', fresh), { yPercent: 110 }, { yPercent: 0, duration: 1, ease: 'expo.out', stagger: .07, delay: .22 });
+  }
+  function setLabel(s) {
+    gTime.textContent = s.tb; gTask.textContent = s.task;
+    if (!RM) gsap.fromTo([gTime, gTask], { y: 8, opacity: .2 }, { y: 0, opacity: 1, duration: .7, ease: 'expo.out', stagger: .05, overwrite: true });
+  }
+  /* 下の帯：いま流れている場面が光り、線が場面の長さで伸びる */
+  function setSteps(i, dur) {
+    $$('li', gSteps).forEach(function (li, k) {
+      li.classList.toggle('is-on', k === i);
+      var b = $('.pg b', li); gsap.killTweensOf(b);
+      if (k !== i) gsap.set(b, { scaleX: k < i ? 1 : 0, opacity: k < i ? .45 : 1 });
+      else if (RM || !dur) gsap.set(b, { scaleX: 1, opacity: 1 });
+      else gsap.fromTo(b, { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: dur, ease: 'none' });
+    });
+  }
+  /* 入口の進行（最後の場面のあとは最初に戻って、トグルが押されるまで流れ続ける） */
+  function present(i, how) {
+    var s = SCENES[i];
+    G.idx = i;
+    showBefore(i, how);
+    setLine(s.before, how === 'instant');
+    setLabel(s);
+    setSteps(i, RM ? 0 : DUR);
+  }
+  function clearTimer() { if (G.timer) { G.timer.kill(); G.timer = null; } }
+  function schedule() {
+    clearTimer();
+    if (RM || !G.open || G.stage !== 'entry') return;
+    G.timer = gsap.delayedCall(DUR, next);
+  }
+  function next() {
+    if (!G.open || G.stage !== 'entry') return;
+    present((G.idx + 1) % SCENES.length, 'flow');
+    schedule();
+  }
+  function goTo(i) {
+    if (!G.open || G.stage !== 'entry' || i === G.idx) return;
+    present(i, 'flow');
+    schedule();
+  }
+  function buildSteps() {
+    gSteps.style.setProperty('--n', SCENES.length);
+    SCENES.forEach(function (s, i) {
+      var li = el('li', '', '<i class="pg"><b></b></i><span class="i mono">' + pad2(i + 1) + '</span><span class="t">' + s.task + '</span>');
+      li.addEventListener('click', function () { goTo(i); });
+      gSteps.appendChild(li);
+    });
+  }
+
+  /* ── トグル ── */
+  var nudgeT = null;
+  function nudge(on) {
+    if (nudgeT) { nudgeT.kill(); nudgeT = null; }
+    if (!on || RM) return;
+    nudgeT = gsap.timeline({ repeat: -1, repeatDelay: 4.2, delay: 2.6 })
+      .to(togKnob, { x: 18, duration: .45, ease: 'power2.out' })
+      .to(togKnob, { x: 0, duration: .9, ease: 'elastic.out(1, .45)' });
+  }
+  function knobX(on) { return on ? tog.clientWidth - togKnob.offsetWidth - togKnob.offsetLeft * 2 : 0; }
+  function setToggle(on, instant, dur) {
+    tog.setAttribute('aria-checked', on ? 'true' : 'false');
+    var d = instant || RM ? 0 : (dur || .85);
+    gsap.to(togFill, { clipPath: on ? 'inset(0% 0% 0% 0% round 999px)' : 'inset(0% 100% 0% 0% round 999px)', duration: d, ease: 'expo.inOut' });
+    gsap.to(togKnob, { x: knobX(on), scale: 1, duration: d, ease: 'expo.inOut', overwrite: true });
+    gsap.to(togKnob, { backgroundColor: on ? '#0a0a0a' : '#edebe6', color: on ? '#efa36b' : '#0a0a0a', duration: d * .6 });
+    gsap.to($('svg', togKnob), { rotation: on ? 180 : 0, duration: d, ease: 'expo.inOut' });
+  }
+  function stopBefore() {
+    clearTimer();
+    G.layers.before.forEach(stopMedia);
+    gMedia.style.visibility = 'hidden';
+  }
+  /* キーボードで操作している人にだけ、トグルに焦点を移す（マウスの人には枠を出さない） */
+  var lastKey = false;
+  D.addEventListener('keydown', function () { lastKey = true; }, true);
+  D.addEventListener('pointerdown', function () { lastKey = false; }, true);
+  function focusToggle() { if (!lastKey) return; try { tog.focus({ preventScroll: true }); } catch (e) {} }
+
+  /* ── トグルを押したあと：自動にしたあとの流れの動画 ──
+     画面が横長なら横長版、縦長（スマホ）なら縦長版。入口を見ているあいだに先に読み込んでおく */
+  function opKey() { return innerHeight > innerWidth ? 'p' : 'l'; }
+  function opSrc(k) {
+    var f = OPV && OPV[k];
+    if (!f) return null;
+    var t = D.createElement('video'), can = function (x) { try { return t.canPlayType(x); } catch (e) { return ''; } };
+    if (f.mp4 && can('video/mp4; codecs="avc1.640028"')) return f.mp4;
+    if (f.webm && can('video/webm; codecs="vp9"')) return f.webm;
+    return f.mp4 || f.webm || null;
+  }
+  function prepOpener() {
+    if (RM || !OPV) return null;
+    var k = opKey();
+    if (G.opv && G.opKey === k) return G.opv;
+    var src = opSrc(k);
+    if (!src) return null;
+    if (G.opv) { try { G.opv.pause(); } catch (e) {} G.opv.remove(); }
+    var v = D.createElement('video');
+    v.muted = true; v.playsInline = true; v.preload = 'auto';
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('preload', 'auto');
+    v.className = 'op-v'; v.src = src;
+    if (OPV[k].poster) v.poster = OPV[k].poster;
+    gOpVideo.appendChild(v);
+    G.opv = v; G.opKey = k;
+    try { v.load(); } catch (e) {}
+    return v;
+  }
+  function startOpener(why) {
+    if (!G.open || G.stage !== 'entry') return;
+    G.stage = 'opener'; G.stageAt = performance.now(); gate.dataset.stage = 'opener';
+    clearTimer();
+    nudge(false);
+    var v = prepOpener();
+    setToggle(true, false, .55);
+    if (!v) { G.timer = gsap.delayedCall(RM ? .2 : .75, function () { exitGate('auto'); }); return; }
+    /* 押した瞬間に一度だけ再生して止めておく（省電力の設定のスマホでも、あとで再生できるように） */
+    G.opPlaying = false;
+    try {
+      var pp = v.play();
+      if (pp && pp.then) pp.then(function () { if (!G.opPlaying) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }, function () {});
+    } catch (e) {}
+    var title = $('.op-title', gFlood);
+    gOp.hidden = false;
+    gsap.set(gOpVideo, { visibility: 'hidden', yPercent: 0 });
+    gsap.set(gFlood, { visibility: 'hidden' });
+    var tl = gsap.timeline();
+    G.opTl = tl;
+    /* つまみが入りきったら縮んで消え、琥珀色がトグルの形から画面いっぱいに広がる。トグルの文字はそのまま題字になる */
+    tl.to(togKnob, { scale: 0, duration: .16, ease: 'power3.in' }, .42)
+      .call(function () {
+        var r = tog.getBoundingClientRect(), W = innerWidth, Hh = innerHeight, a = $('.tog-ink', tog).getBoundingClientRect();
+        var from = 'inset(' + Math.round(r.top) + 'px ' + Math.round(W - r.right) + 'px ' + Math.round(Hh - r.bottom) + 'px ' + Math.round(r.left) + 'px round ' + Math.round(r.height / 2) + 'px)';
+        gsap.set(gFlood, { visibility: 'visible', clipPath: from });
+        gsap.set(title, { clearProps: 'transform' });
+        var b = title.getBoundingClientRect();
+        gsap.set(title, { x: a.left - b.left, y: a.top - b.top, scale: a.width / b.width });
+        gate.classList.add('on-amber');
+        gsap.fromTo(gFlood, { clipPath: from }, { clipPath: 'inset(0px 0px 0px 0px round 0px)', duration: .55, ease: 'expo.inOut' });
+        gsap.to(title, { x: 0, y: 0, scale: 1, duration: .55, ease: 'expo.inOut' });
+      }, null, .5)
+      .call(function () { gPage.hidden = true; stopBefore(); playOpener(); }, null, 1.1);
+  }
+  function playOpener() {
+    var v = G.opv;
+    if (!v || G.stage !== 'opener') return;
+    var started = false, dur = (OPV && OPV.dur) || 10;
+    var leave = function () { if (G.stage === 'opener' && G.open) exitGate('auto'); };
+    var go = function () {
+      if (started || G.stage !== 'opener') return;
+      started = true;
+      gsap.set(gOpVideo, { visibility: 'visible' });
+      /* 琥珀色が左へ抜けて、動画が見える */
+      gsap.fromTo(gFlood, { clipPath: 'inset(0% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 100%)', duration: .5, ease: 'expo.inOut', onComplete: function () { gsap.set(gFlood, { visibility: 'hidden' }); } });
+      gsap.delayedCall(.25, function () { gate.classList.remove('on-amber'); });
+      clearTimer();
+      G.timer = gsap.delayedCall(dur + 1.2, leave);
+    };
+    /* 最後は黒く暗くなるので、暗くなり始めたら本編へ移る */
+    var onTime = function () { if (v.currentTime >= dur - .45) { v.removeEventListener('timeupdate', onTime); leave(); } };
+    v.addEventListener('timeupdate', onTime);
+    v.addEventListener('playing', go, { once: true });
+    v.addEventListener('ended', leave, { once: true });
+    v.addEventListener('error', leave, { once: true });
+    G.opPlaying = true;
+    try { v.currentTime = 0; } catch (e) {}
+    var p = v.play(); if (p && p.catch) p.catch(leave);
+    /* 読み込みが遅いときは待ち続けずに本編へ */
+    G.timer = gsap.delayedCall(4, function () { if (!started) leave(); });
+  }
+  function stopOpener() {
+    if (G.opv) { try { G.opv.pause(); } catch (e) {} }
+  }
+
+  /* ── 入口を出て、本編へ ── */
+  var heroDone = false;
+  function exitGate(reason) {
+    if (!G.open) return;
+    var stage = G.stage;
+    G.open = false; clearTimer(); nudge(false);
+    if (G.opTl) { G.opTl.kill(); G.opTl = null; }
+    var fin = function () {
+      gate.classList.add('is-gone');
+      gsap.set(gate, { clearProps: 'transform' });
+      G.layers.before.forEach(stopMedia);
+      stopOpener();
+      lockScroll(false);
+      if (lenis) lenis.scrollTo(0, { immediate: true, force: true }); else scrollTo(0, 0);
+      ScrollTrigger.refresh();
+    };
+    if (RM) { gsap.to(gate, { autoAlpha: 0, duration: .3, onComplete: function () { gsap.set(gate, { autoAlpha: 1 }); fin(); heroIntro(); } }); return; }
+    var rise = $$('.g-top .g-rise', gate), tl = gsap.timeline({ onComplete: fin });
+    gate.classList.remove('on-amber');
+    if (stage === 'opener') {
+      /* 動画ごと幕を上へ抜く（動画は少し遅れて動き、奥行きが出る） */
+      gsap.set(gFlood, { visibility: 'hidden' });
+      tl.to(rise, { yPercent: -60, autoAlpha: 0, duration: .45, stagger: .025, ease: 'power3.in' }, 0)
+        .to(gate, { yPercent: -100, duration: 1.1, ease: 'expo.inOut' }, 0)
+        .to(gOpVideo, { yPercent: 14, duration: 1.1, ease: 'expo.inOut' }, 0)
+        .call(heroIntro, null, .45);
+      return;
+    }
+    rise = rise.concat($$('.g-r', gPage), $$('.g-line .ln > span', gPage));
+    tl.to(rise, { yPercent: -40, autoAlpha: 0, duration: .45, stagger: .02, ease: 'power3.in' })
+      .to(gate, { yPercent: -100, duration: 1.1, ease: 'expo.inOut' }, '-=.2')
+      .call(heroIntro, null, '-=.6');
+  }
+  function resetOpener() {
+    if (G.opTl) { G.opTl.kill(); G.opTl = null; }
+    gate.classList.remove('on-amber');
+    gsap.set($('.op-title', gFlood), { clearProps: 'transform' });
+    gsap.set(gFlood, { visibility: 'hidden', clearProps: 'opacity' });
+    gsap.set(gOpVideo, { visibility: 'hidden', yPercent: 0 });
+    stopOpener();
+    gOp.hidden = true;
+  }
+  function openGate(first) {
+    if (!gate || !SCENES.length) { if (gate) gate.classList.add('is-gone'); heroIntro(); return; }
+    G.open = true; G.stage = 'entry'; G.stageAt = performance.now(); gate.dataset.stage = 'entry';
+    gate.classList.remove('is-gone');
+    gsap.set(gate, { yPercent: 0, autoAlpha: 1 });
+    gMedia.style.visibility = '';
+    resetOpener();
+    gPage.hidden = false;
+    setToggle(false, true);
+    if (!first && !RM) gsap.from(gate, { yPercent: -100, duration: 1.1, ease: 'expo.inOut' });
+    lockScroll(true);
+    G.layers.before.cur = null;
+    G.layers.before.forEach(function (c) { c.box.classList.remove('is-on'); });
+    var parts = $$('.g-top .g-rise', gate).concat($$('.g-r', gPage));
+    gsap.set(parts, { clearProps: 'all' });
+    present(0, 'instant');
+    if (!RM) {
+      gsap.fromTo(parts, { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.2, ease: 'expo.out', stagger: .07, delay: .1 });
+      gsap.from($$('.g-line .ln > span', gate), { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: .08, delay: .25 });
+    }
+    schedule();
+    nudge(true);
+    focusToggle();
+  }
+  /* スクロール・下キーは、入口ではトグルを押したのと同じ。動画の途中なら本編へ飛ばす */
+  function advance(why) {
+    var wait = G.stage === 'entry' ? 1500 : 1100;
+    if (!G.open || performance.now() - G.stageAt < wait) return;
+    if (G.stage === 'entry') startOpener(why);
+    else exitGate(why);
+  }
+
+  function initGate() {
+    if (!gate) return false;
+    gMedia = $('.g-media', gate); gBefore = $('.g-before', gate);
+    gPage = $('.g-page', gate); gOp = $('.g-op', gate);
+    gLine = $('.g-line', gate); gTime = $('.g-time', gate); gTask = $('.g-task', gate); gSteps = $('.g-steps', gate);
+    tog = $('.tog', gate); togFill = $('.tog-fill', gate); togKnob = $('.tog-knob', gate);
+    gOpVideo = $('.op-video', gate); gFlood = $('.op-flood', gate);
+    if (!SCENES.length) return false;
+    SCENES.forEach(function (s) {
+      var b = buildClip(s.b);
+      gBefore.appendChild(b.box);
+      G.layers.before.push(b);
+    });
+    buildSteps();
+    tog.addEventListener('click', function () { if (G.open && G.stage === 'entry') startOpener('click'); });
+    $('.g-skip', gate).addEventListener('click', function () { exitGate('skip'); });
+    /* ホイールやトラックパッドを回し続けている間は、1 段だけ進める */
+    var lastWheel = 0;
+    gate.addEventListener('wheel', function (e) {
+      var now = performance.now(), gap = now - lastWheel; lastWheel = now;
+      if (gap > 400 && e.deltaY > 14) advance('wheel');
+    }, { passive: true });
+    var ty = null;
+    gate.addEventListener('touchstart', function (e) { ty = e.touches[0].clientY; }, { passive: true });
+    gate.addEventListener('touchmove', function (e) { if (ty != null && ty - e.touches[0].clientY > 60) { ty = null; advance('swipe'); } }, { passive: true });
+    D.addEventListener('keydown', function (e) {
+      if (!G.open) return;
+      if (e.key === 'Escape') { e.preventDefault(); exitGate('key'); return; }
+      if (e.repeat) return;
+      if (e.key === 'PageDown' || e.key === 'ArrowDown' || (e.key === ' ' && !(e.target.closest && e.target.closest('button')))) { e.preventDefault(); advance('key'); }
+    });
+    addEventListener('resize', function () {
+      if (tog.getAttribute('aria-checked') === 'true') gsap.set(togKnob, { x: knobX(true) });
+      G.layers.before.forEach(placeClip);
+      if (G.open && G.stage === 'entry' && G.opv && G.opKey !== opKey()) prepOpener();
+    });
+    D.addEventListener('visibilitychange', function () {
+      var l = G.layers.before;
+      if (l.cur != null) { var c = l[l.cur]; if (c.live && c.live.tagName === 'VIDEO') { if (D.hidden) c.live.pause(); else if (G.open && G.stage === 'entry') { var pr = c.live.play(); if (pr && pr.catch) pr.catch(function () {}); } } }
+      if (G.opv && G.stage === 'opener' && G.open) { if (D.hidden) G.opv.pause(); else { var p2 = G.opv.play(); if (p2 && p2.catch) p2.catch(function () {}); } }
+    });
+    detectMotion().then(function (k) {
+      G.motion = k;
+      var l = G.layers.before; if (l.cur != null && G.open && G.stage === 'entry') startMedia(l[l.cur]);
+      /* 次の場面を先に読み込み、そのあとトグルのあとの動画も読み込んでおく */
+      G.layers.before.forEach(function (c, i) { var ext = mediaExt(c.info); if (ext) setTimeout(function () { getBlob(clipUrl(c.id, ext)).catch(function () {}); }, 600 + i * 450); });
+      setTimeout(function () { if (G.open && G.stage === 'entry') prepOpener(); }, 900);
+    });
+    var rp = $('.ft-replay');
+    if (rp) rp.addEventListener('click', function () { openGate(false); });
+    return true;
+  }
+
+  /* ───────────────── 本編 ───────────────── */
+  function heroIntro() {
+    if (heroDone) return; heroDone = true;
+    if (RM) { gsap.set('.hero-h1 .ln > span, .hd-i, .hero-r', { clearProps: 'all' }); return; }
+    var tl = gsap.timeline();
+    tl.fromTo('.hero-bg img', { scale: 1.2 }, { scale: 1.04, duration: 2.8, ease: 'expo.out' }, 0)
+      .to('.hero-h1 .ln > span', { yPercent: 0, duration: 1.5, ease: 'expo.out', stagger: .11 }, .2)
+      .to('.hd-i', { yPercent: 0, autoAlpha: 1, duration: 1.1, ease: 'expo.out', stagger: .06 }, .35)
+      .to('.hero-r', { y: 0, autoAlpha: 1, duration: 1.3, ease: 'expo.out', stagger: .08 }, .6);
+  }
+  function prepHero() {
+    if (RM) return;
+    gsap.set('.hero-bg img', { scale: 1.2 });
+    gsap.set('.hero-h1 .ln > span', { yPercent: 115 });
+    gsap.set('.hd-i', { yPercent: -60, autoAlpha: 0 });
+    gsap.set('.hero-r', { y: 28, autoAlpha: 0 });
+    gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } })
+      .to('.hero-bg', { yPercent: 22, ease: 'none' }, 0)
+      .to('.hero-in', { y: -90, opacity: .15, ease: 'none' }, 0);
+  }
+
+  /* 表示の演出（data 属性で動かす） */
+  function initReveals() {
+    if (RM) { $$('[data-count]').forEach(function (n) { n.textContent = fmt(n.dataset.count); }); return; }
+    $$('[data-lines]').forEach(function (h) {
+      var sp = $$('.ln > span', h), dl = parseFloat(h.dataset.delay || 0);
+      gsap.set(sp, { yPercent: 112 });
+      ScrollTrigger.create({ trigger: h, start: 'top 90%', once: true, onEnter: function () { gsap.to(sp, { yPercent: 0, duration: 1.25, ease: 'expo.out', stagger: .085, delay: dl }); } });
+    });
+    $$('[data-reveal]').forEach(function (n) {
+      var k = n.dataset.reveal || 'up', dl = parseFloat(n.dataset.delay || 0), from, to;
+      if (k === 'fade') { from = { autoAlpha: 0 }; to = { autoAlpha: 1, duration: 1.2, ease: 'power2.out' }; }
+      else if (k === 'line') { from = { scaleX: 0, transformOrigin: '0 50%' }; to = { scaleX: 1, duration: 1.4, ease: 'expo.inOut' }; }
+      else if (k === 'scale') { from = { scale: .94, autoAlpha: 0 }; to = { scale: 1, autoAlpha: 1, duration: 1.3, ease: 'expo.out' }; }
+      else { from = { y: 44, autoAlpha: 0 }; to = { y: 0, autoAlpha: 1, duration: 1.15, ease: 'expo.out' }; }
+      gsap.set(n, from); to.delay = dl;
+      ScrollTrigger.create({ trigger: n, start: 'top 90%', once: true, onEnter: function () { gsap.to(n, to); } });
+    });
+    $$('[data-reveal-group]').forEach(function (g) {
+      var kids = Array.prototype.slice.call(g.children), st = parseFloat(g.dataset.revealGroup) || .07;
+      gsap.set(kids, { y: 36, autoAlpha: 0 });
+      ScrollTrigger.create({ trigger: g, start: 'top 88%', once: true, onEnter: function () { gsap.to(kids, { y: 0, autoAlpha: 1, duration: 1.1, ease: 'expo.out', stagger: st }); } });
+    });
+    $$('[data-count]').forEach(function (n) {
+      var v = parseFloat(n.dataset.count), o = { v: 0 };
+      n.textContent = '0';
+      ScrollTrigger.create({ trigger: n, start: 'top 92%', once: true, onEnter: function () { gsap.to(o, { v: v, duration: 2.1, ease: 'power3.out', onUpdate: function () { n.textContent = fmt(Math.round(o.v)); } }); } });
+    });
+    $$('[data-parallax]').forEach(function (n) {
+      var a = parseFloat(n.dataset.parallax) || 8;
+      gsap.fromTo(n, { yPercent: -a }, { yPercent: a, ease: 'none', scrollTrigger: { trigger: n.parentNode, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+  }
+  function initWords() {
+    var seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
+    $$('[data-words]').forEach(function (p) {
+      var text = p.textContent, parts = [];
+      if (seg) { var it = seg.segment(text); for (var s of it) parts.push(s.segment); }
+      else parts = text.split('');
+      p.setAttribute('aria-label', text);
+      p.innerHTML = parts.map(function (w) { return /^\s+$/.test(w) ? w : '<span class="w" aria-hidden="true">' + w + '</span>'; }).join('');
+      var ws = $$('.w', p);
+      if (RM) { gsap.set(ws, { opacity: 1 }); return; }
+      gsap.fromTo(ws, { opacity: .16 }, { opacity: 1, ease: 'none', stagger: .12, scrollTrigger: { trigger: p, start: 'top 82%', end: 'bottom 52%', scrub: true } });
+    });
+  }
+
+  /* マーキー（スクロールの速さで一瞬速くなる） */
+  function initMarquees() {
+    $$('.mq-track').forEach(function (t) {
+      if (RM) return;
+      var dur = t.closest('.hb-mq') ? 38 : t.closest('.mq-ft') ? 30 : 44;
+      var tw = gsap.to(t, { xPercent: -50, duration: dur, ease: 'none', repeat: -1 });
+      ScrollTrigger.create({ trigger: t, start: 'top bottom', end: 'bottom top', onUpdate: function (e) {
+        var r = 1 + Math.min(Math.abs(e.getVelocity()) / 450, 4);
+        gsap.to(tw, { timeScale: r, duration: .2, overwrite: true, onComplete: function () { gsap.to(tw, { timeScale: 1, duration: 1, ease: 'power2.out' }); } });
+      } });
+    });
+  }
+  function initRotator() {
+    var li = $$('.hb-rot li'); if (!li.length) return;
+    li.forEach(function (x, i) { x.style.top = (i * 23) + 'px'; });
+    var k = 0; li[0].classList.add('is-on');
+    if (RM) return;
+    setInterval(function () { li[k].classList.remove('is-on'); k = (k + 1) % li.length; li[k].classList.add('is-on'); }, 2400);
+  }
+
+  /* ヘッダー */
+  function initHeader() {
+    var hd = $('#hd'), last = 0, ticking = false;
+    function upd() {
+      ticking = false;
+      var y = lenis ? lenis.scroll : scrollY;
+      hd.classList.toggle('is-solid', y > 24);
+      if (y > 360 && y - last > 4) hd.classList.add('is-hidden');
+      else if (last - y > 4 || y <= 360) hd.classList.remove('is-hidden');
+      last = y;
+    }
+    function on() { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }
+    if (lenis) lenis.on('scroll', on); else addEventListener('scroll', on, { passive: true });
+    $$('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = a.getAttribute('href'); if (id.length < 2) return;
+        var t = $(id); if (!t) return;
+        e.preventDefault();
+        if (lenis) lenis.scrollTo(t, { offset: id === '#top' ? 0 : -8, duration: 1.4 }); else t.scrollIntoView();
+      });
+    });
+  }
+
+  /* 03 実演：画面を止めて 3 段階 */
+  function initDemo() {
+    var win = $('.win'), steps = $$('.demo-steps li'), logs = $$('.log li'), nodes = $$('.fn'), links = $$('.fl');
+    if (!win) return;
+    var cur = -2;
+    function stage(n) {
+      if (n === cur) return; cur = n;
+      win.classList.toggle('pre', n < 0);
+      win.dataset.stage = Math.max(0, n);
+      steps.forEach(function (s, i) { s.classList.toggle('is-on', i === Math.max(0, n)); });
+      var k = 0;
+      logs.forEach(function (l) {
+        var s = +l.dataset.s, on = s <= n;
+        if (on && !l.classList.contains('is-on')) { l.style.transitionDelay = (s === n ? (k++) * .16 : 0) + 's'; }
+        else l.style.transitionDelay = '0s';
+        l.classList.toggle('is-on', on);
+      });
+      nodes.forEach(function (x) { x.classList.toggle('is-on', +x.dataset.n <= n); });
+      links.forEach(function (x, i) { x.classList.toggle('is-on', +nodes[i].dataset.n <= n && +nodes[i + 1].dataset.n <= n); });
+    }
+    if (RM) { stage(2); return; }
+    stage(-1);
+    var mm = gsap.matchMedia();
+    mm.add('(min-width: 1024px)', function () {
+      ScrollTrigger.create({ trigger: '.demo-pin', start: 'top top', end: '+=200%', pin: true, pinSpacing: true, anticipatePin: 1,
+        onUpdate: function (e) { stage(Math.min(2, Math.floor(3 * e.progress))); } });
+      ScrollTrigger.create({ trigger: '.demo-pin', start: 'top 60%', onEnter: function () { if (cur < 0) stage(0); }, onLeaveBack: function () { stage(-1); } });
+    });
+    mm.add('(max-width: 1023px)', function () {
+      var calls = [];
+      ScrollTrigger.create({ trigger: '.win', start: 'top 75%', once: true, onEnter: function () {
+        stage(0); calls.push(gsap.delayedCall(1.6, function () { stage(1); }), gsap.delayedCall(3.2, function () { stage(2); }));
+      } });
+      return function () { calls.forEach(function (c) { c.kill(); }); };
+    });
+  }
+
+  /* 04 進め方：アコーディオンと固定の写真 */
+  function initAcc() {
+    var items = $$('.acc-i'), figs = $$('.flow-ph figure');
+    items.forEach(function (it, i) {
+      $('.acc-h', it).addEventListener('click', function () {
+        var open = it.classList.contains('is-open');
+        items.forEach(function (o) { o.classList.remove('is-open'); $('.acc-h', o).setAttribute('aria-expanded', 'false'); });
+        if (!open) { it.classList.add('is-open'); $('.acc-h', it).setAttribute('aria-expanded', 'true'); }
+        var on = open ? 0 : i;
+        figs.forEach(function (f, k) { f.classList.toggle('is-on', k === on); });
+        var ft = $('.fp-t'); if (ft && figs[on]) ft.textContent = figs[on].dataset.t || '';
+        setTimeout(function () { ScrollTrigger.refresh(); }, 700);
+      });
+    });
+  }
+
+  /* 06 実績：行を開く、マウスに写真がついてくる */
+  function initWorks() {
+    var items = $$('.wl-i'), cur = $('.wl-cur'), box = $('.wl-cur-in'), imgs = {};
+    items.forEach(function (it) {
+      var h = $('.wl-h', it);
+      h.addEventListener('click', function () {
+        var open = it.classList.contains('is-open');
+        items.forEach(function (o) { if (o !== it) { o.classList.remove('is-open'); $('.wl-h', o).setAttribute('aria-expanded', 'false'); } });
+        it.classList.toggle('is-open', !open); h.setAttribute('aria-expanded', open ? 'false' : 'true');
+        setTimeout(function () { ScrollTrigger.refresh(); }, 750);
+      });
+    });
+    if (!FINE || !cur) return;
+    var qx = gsap.quickTo(cur, 'x', { duration: .65, ease: 'power3' }), qy = gsap.quickTo(cur, 'y', { duration: .65, ease: 'power3' });
+    var list = $('.wl');
+    addEventListener('mousemove', function (e) { qx(e.clientX + 24); qy(e.clientY - 100); }, { passive: true });
+    items.forEach(function (it) {
+      var src = it.dataset.img, h = $('.wl-h', it);
+      h.addEventListener('mouseenter', function () {
+        if (it.classList.contains('is-open')) return;
+        if (!imgs[src]) { var im = new Image(); im.src = src; im.alt = ''; box.appendChild(im); imgs[src] = im; }
+        Object.keys(imgs).forEach(function (k) { imgs[k].classList.toggle('is-on', k === src); });
+        cur.classList.add('is-on');
+      });
+      h.addEventListener('mouseleave', function () { cur.classList.remove('is-on'); });
+      h.addEventListener('click', function () { cur.classList.remove('is-on'); });
+    });
+    list.addEventListener('mouseleave', function () { cur.classList.remove('is-on'); });
+  }
+
+  /* 07 経歴：1 年分のコミット */
+  function initActivity() {
+    var cv = $('.cr-cv'), data = window.__DATA__;
+    if (!cv || !data) return;
+    var n = data.n, days = [];
+    for (var i = 0; i < n; i++) { var s = 0; data.cats.forEach(function (c) { s += c[2][i] || 0; }); days.push(s); }
+    var max = Math.max.apply(null, days), pk = days.indexOf(max), prog = { p: RM ? 1 : 0 };
+    function draw() {
+      var w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      var x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
+      var bw = w / n, lim = Math.floor(n * prog.p);
+      x.fillStyle = 'rgba(237,235,230,.09)'; x.fillRect(0, h - 1, w, 1);
+      for (var i = 0; i < lim; i++) {
+        if (!days[i]) continue;
+        var bh = Math.max(2, Math.sqrt(days[i] / max) * (h - 6));
+        x.fillStyle = i === pk ? '#efa36b' : 'rgba(237,235,230,.42)';
+        x.fillRect(i * bw, h - bh, Math.max(1, bw - .6), bh);
+      }
+    }
+    draw(); addEventListener('resize', draw);
+    if (!RM) ScrollTrigger.create({ trigger: cv, start: 'top 85%', once: true, onEnter: function () { gsap.to(prog, { p: 1, duration: 1.8, ease: 'power2.inOut', onUpdate: draw }); } });
+  }
+
+  /* アドレスのコピー */
+  function initCopy() {
+    var b = $('#copy'), m = $('.cp-msg'), mail = $('#mail');
+    if (!b) return;
+    b.addEventListener('click', function () {
+      var t = mail.textContent.trim();
+      function sel() { var r = D.createRange(); r.selectNodeContents(mail); var s = getSelection(); s.removeAllRanges(); s.addRange(r); m.textContent = 'アドレスを選びました。コピーしてお使いください。'; }
+      try {
+        navigator.clipboard.writeText(t).then(function () { m.textContent = 'アドレスをコピーしました。'; }, sel);
+      } catch (e) { sel(); }
+    });
+  }
+
+  /* 起動 */
+  initWords();
+  prepHero();
+  initReveals();
+  initMarquees();
+  initRotator();
+  initHeader();
+  initDemo();
+  initAcc();
+  initWorks();
+  initActivity();
+  initCopy();
+  var hasGate = initGate();
+  H.classList.add('app');
+  var deep = location.hash && location.hash.length > 1 && $(location.hash);
+  if (hasGate && !deep) openGate(true);
+  else { if (gate) gate.classList.add('is-gone'); heroIntro(); if (deep && lenis) setTimeout(function () { lenis.scrollTo(deep, { immediate: true, force: true }); }, 60); }
+  addEventListener('load', function () { ScrollTrigger.refresh(); });
+  if (D.fonts && D.fonts.ready) D.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+  window.__gate = { G: G, exit: exitGate, open: openGate, goTo: goTo, startOpener: startOpener };
+})();
+
+</script>
+</body>
+</html>
